@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Art Gallery</title>
+</head>
+<body>
+  <h1>Artworks</h1>
+  <button onclick="loadArtworks()">Load All</button>
+  <div id="gallery"></div>
+  <h2>Add Artwork</h2>
+  <input id="title" placeholder="Title" />
+  <input id="artist" placeholder="Artist" />
+  <input id="year" placeholder="Year" type="number" />
+  <button onclick="addArtwork()">Add</button>
+
+
+  <script>
+    function loadArtworks() {
+      fetch('http://localhost:3000/api/artworks')
+        .then(res => res.json())
+        .then(data => {
+          const gallery = document.getElementById('gallery')
+          gallery.innerHTML = ''
+          data.forEach(art => {
+            const div = document.createElement('div')
+            div.innerHTML = `
+            ${art.title} by ${art.artist} (${art.year})
+            <button onclick="deleteArtwork(${art.id})">Delete</button>
+            `
+            gallery.appendChild(div)
+          })
+        })
+        .catch(err => console.error('Fetch error:', err))
+    }
+
+    function addArtwork() {
+    const title = document.getElementById('title').value
+    const artist = document.getElementById('artist').value
+    const year = parseInt(document.getElementById('year').value)
+
+    if (!title || !artist || !year) {
+        alert('Please fill all fields')
+        return
+    }
+
+    fetch('http://localhost:3000/api/artworks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+        id: Math.floor(Math.random() * 100000), // temporary ID
+        title, artist, year
+        })
+    })
+    .then(() => {
+        loadArtworks()
+        document.getElementById('title').value = ''
+        document.getElementById('artist').value = ''
+        document.getElementById('year').value = ''
+    })
+    }
+
+    function deleteArtwork(id) {
+    fetch(`http://localhost:3000/api/artworks/${id}`, {
+        method: 'DELETE'
+    })
+    .then(() => loadArtworks())
+    }
+
+
+  </script>
+</body>
+</html>
