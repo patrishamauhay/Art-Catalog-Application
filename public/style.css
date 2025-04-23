@@ -535,16 +535,20 @@ body {
     background-color: #e0e0e0;
   }
   
-  /* Make sure navbar works on details page too */
-  body {
-    padding-top: 60px;
-  }
-  
-  .navbar {
-    position: fixed;
-    top: 0;
-  }
   
   .details-container {
     margin-top: 20px;
   }
+
+  .cart-img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    vertical-align: middle;
+    transition: transform 0.2s ease;
+  }
+  
+  .cart-img:hover {
+    transform: scale(1.1);
+  }
+  
