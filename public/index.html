@@ -3,54 +3,59 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Art Gallery</title>
-
-    <!-- MDBootstrap -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.css" rel="stylesheet" />
-    <!-- Link external CSS -->
-    <link rel="stylesheet" href="style.css" />
-
+  <title>Simply Art Gallery</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  
 </head>
 <body>
 
-  <div class="container-fluid">
-    <div class="row">
-      <!-- Left Panel: Forms -->
-      <div class="col-md-4 form-section shadow-sm">
-        <h4 class="mb-3">Artwork Controls</h4>
-
-        <button class="btn btn-primary mb-3" onclick="loadArtworks()">Load All Artworks</button>
-
-        <h5>Add Artwork</h5>
-        <input id="title" class="form-control mb-2" placeholder="Title" />
-        <input id="artist" class="form-control mb-2" placeholder="Artist" />
-        <input id="year" class="form-control mb-2" placeholder="Year" type="number" />
-        <input id="medium" class="form-control mb-2" placeholder="Medium" />
-        <input id="image" class="form-control mb-2" placeholder="Image URL (optional)" />
-        <button class="btn btn-success mb-4" onclick="addArtwork()">Add</button>
-
-        <h5>Edit Artwork</h5>
-        <input id="edit-id" type="hidden" />
-        <input id="edit-title" class="form-control mb-2" placeholder="Title" />
-        <input id="edit-artist" class="form-control mb-2" placeholder="Artist" />
-        <input id="edit-year" class="form-control mb-2" placeholder="Year" type="number" />
-        <input id="edit-medium" class="form-control mb-2" placeholder="Medium" />
-        <input id="edit-image" class="form-control mb-2" placeholder="Image URL" />
-        <button class="btn btn-warning" onclick="updateArtwork()">Update</button>
-      </div>
-
-      <!-- Right Panel: Gallery -->
-      <div class="col-md-8">
-        <h4 class="mb-3">Gallery</h4>
-        <div id="gallery" class="art-grid"></div>
-      </div>
+  <!-- Hero Header -->
+  <header class="hero">
+    <div class="hero-content">
+      <h1>DISCOVER THE WORLD OF ART</h1>
+      <p>Explore, add, and manage curated artwork collections</p>
+      <div class="search-wrapper">
+        <input type="text" id="searchInput" placeholder="Enter keywords..." />
+        <button onclick="searchArtworks()" class="search-button" aria-label="Search">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>      
     </div>
+  </header>
+
+  <!-- Toggle Form Button -->
+  <div class="fab-container">
+    <button class="fab" onclick="toggleForm()">➕</button>
   </div>
 
-  <!-- MDBootstrap JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.js"></script>
+  <!-- Hidden Form Panel -->
+  <div id="form-panel" class="form-panel hidden">
+    <h4>Manage Artwork</h4>
+    <input id="title" class="form-control" placeholder="Title" />
+    <input id="artist" class="form-control" placeholder="Artist" />
+    <input id="year" class="form-control" placeholder="Year" type="number" />
+    <input id="medium" class="form-control" placeholder="Medium" />
+    <input id="image" class="form-control" placeholder="Image URL" />
+    <input id="edit-id" type="hidden" />
+    <button class="btn btn-success" onclick="addOrUpdateArtwork()">Save</button>
+  </div>
 
+  <!-- Gallery -->
+  <main class="gallery-section">
+    <h2 class="gallery-title">Gallery</h2>
+    <div id="gallery" class="gallery-grid"></div>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.js"></script>
   <script>
+    let editing = false;
+
+    function toggleForm() {
+      document.getElementById("form-panel").classList.toggle("hidden");
+    }
+
     function loadArtworks() {
       fetch('http://localhost:3000/api/artworks')
         .then(res => res.json())
@@ -62,11 +67,11 @@
             card.className = 'card'
 
             card.innerHTML = `
-              ${art.image ? `<img src="${art.image}" class="card-img-top" alt="${art.title}">` : ''}
+              ${art.image ? `<img src="${art.image}" class="card-img" alt="${art.title}">` : ''}
               <div class="card-body">
-                <h5 class="card-title">${art.title || 'Untitled'} (${art.year || 'Unknown'})</h5>
-                <p class="card-text"><strong>Artist:</strong> ${art.artist || 'Unknown'}<br>
-                <strong>Medium:</strong> ${art.medium || 'Unknown'}</p>
+                <h5>${art.title || 'Untitled'}</h5>
+                <p><strong>${art.artist || 'Unknown'} · ${art.year || 'Year Unknown'}</strong></p>
+                <p>${art.medium || 'Medium Unknown'}</p>
                 <button class="btn btn-danger btn-sm" onclick="deleteArtwork(${art.id})">Delete</button>
                 <button class="btn btn-info btn-sm" onclick='editArtwork(${JSON.stringify(art)})'>Edit</button>
               </div>
@@ -74,84 +79,95 @@
             gallery.appendChild(card)
           })
         })
-        .catch(err => console.error('Fetch error:', err))
+        .catch(err => console.error('Error:', err))
     }
 
-    function addArtwork() {
+    function addOrUpdateArtwork() {
+      const id = document.getElementById('edit-id').value
       const title = document.getElementById('title').value
       const artist = document.getElementById('artist').value
       const year = parseInt(document.getElementById('year').value)
       const medium = document.getElementById('medium').value
       const image = document.getElementById('image').value
 
-      if (!title || !artist || !year) {
-        alert('Please fill all required fields')
-        return
-      }
+      if (!title || !artist || !year) return alert("Please fill required fields")
 
-      fetch('http://localhost:3000/api/artworks', {
-        method: 'POST',
+      const payload = { title, artist, year, medium, image }
+
+      const method = id ? 'PUT' : 'POST'
+      const url = id ? `http://localhost:3000/api/artworks/${id}` : `http://localhost:3000/api/artworks`
+      if (!id) payload.id = Math.floor(Math.random() * 100000)
+
+      fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: Math.floor(Math.random() * 100000),
-          title, artist, year, medium, image
-        })
-      })
-      .then(() => {
-        loadArtworks()
+        body: JSON.stringify(payload)
+      }).then(() => {
+        document.getElementById('edit-id').value = ''
         document.getElementById('title').value = ''
         document.getElementById('artist').value = ''
         document.getElementById('year').value = ''
         document.getElementById('medium').value = ''
         document.getElementById('image').value = ''
+        document.getElementById("form-panel").classList.add("hidden")
+        loadArtworks()
       })
     }
 
     function deleteArtwork(id) {
       fetch(`http://localhost:3000/api/artworks/${id}`, {
         method: 'DELETE'
-      })
-      .then(() => loadArtworks())
+      }).then(() => loadArtworks())
     }
 
     function editArtwork(art) {
       document.getElementById('edit-id').value = art.id
-      document.getElementById('edit-title').value = art.title || ''
-      document.getElementById('edit-artist').value = art.artist || ''
-      document.getElementById('edit-year').value = art.year || ''
-      document.getElementById('edit-medium').value = art.medium || ''
-      document.getElementById('edit-image').value = art.image || ''
+      document.getElementById('title').value = art.title || ''
+      document.getElementById('artist').value = art.artist || ''
+      document.getElementById('year').value = art.year || ''
+      document.getElementById('medium').value = art.medium || ''
+      document.getElementById('image').value = art.image || ''
+      document.getElementById("form-panel").classList.remove("hidden")
     }
 
-    function updateArtwork() {
-      const id = parseInt(document.getElementById('edit-id').value)
-      const title = document.getElementById('edit-title').value
-      const artist = document.getElementById('edit-artist').value
-      const year = parseInt(document.getElementById('edit-year').value)
-      const medium = document.getElementById('edit-medium').value
-      const image = document.getElementById('edit-image').value
+    function searchArtworks() {
+    const query = document.getElementById('searchInput').value.toLowerCase()
 
-      if (!title || !artist || !year || !id) {
-        alert('Fill all edit fields first!')
-        return
-      }
-
-      fetch(`http://localhost:3000/api/artworks/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, artist, year, medium, image })
-      })
-      .then(() => {
-        loadArtworks()
-        document.getElementById('edit-id').value = ''
-        document.getElementById('edit-title').value = ''
-        document.getElementById('edit-artist').value = ''
-        document.getElementById('edit-year').value = ''
-        document.getElementById('edit-medium').value = ''
-        document.getElementById('edit-image').value = ''
-      })
+    fetch('http://localhost:3000/api/artworks')
+        .then(res => res.json())
+        .then(data => {
+        const filtered = data.filter(art =>
+            art.title?.toLowerCase().includes(query) ||
+            art.artist?.toLowerCase().includes(query)
+        )
+        renderGallery(filtered)
+        })
+        .catch(err => console.error('Search error:', err))
     }
+
+    function renderGallery(data) {
+    const gallery = document.getElementById('gallery')
+    gallery.innerHTML = ''
+    data.forEach(art => {
+        const card = document.createElement('div')
+        card.className = 'card'
+        card.innerHTML = `
+        ${art.image ? `<img src="${art.image}" class="card-img" alt="${art.title}">` : ''}
+        <div class="card-body">
+            <h5>${art.title || 'Untitled'}</h5>
+            <p><strong>${art.artist || 'Unknown'} · ${art.year || 'Year Unknown'}</strong></p>
+            <p>${art.medium || 'Medium Unknown'}</p>
+            <button class="btn btn-danger btn-sm" onclick="deleteArtwork(${art.id})">Delete</button>
+            <button class="btn btn-info btn-sm" onclick='editArtwork(${JSON.stringify(art)})'>Edit</button>
+        </div>
+        `
+        gallery.appendChild(card)
+    })
+    }
+
+
+    // Load artworks on page load
+    loadArtworks()
   </script>
-
 </body>
 </html>

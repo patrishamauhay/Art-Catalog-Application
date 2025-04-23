@@ -13,21 +13,26 @@ app.use(express.static('public'))
 let db, artworks
 
 async function startServer() {
-  const mongod = await MongoMemoryServer.create()
-  const uri = mongod.getUri()
-  const client = new MongoClient(uri)
-  await client.connect()
-  db = client.db('artdb')
-  artworks = db.collection('artworks')
-
-  const data = JSON.parse(fs.readFileSync('./data/artworks.json'))
-
-  await artworks.deleteMany({})
-  await artworks.insertMany(data)
+    const mongod = await MongoMemoryServer.create()
+    const uri = mongod.getUri()
+    const client = new MongoClient(uri)
+    await client.connect()
+    db = client.db('artdb')
+    artworks = db.collection('artworks')
   
-
-  app.listen(3000, () => console.log('Server running on http://localhost:3000'))
-}
+    // Only insert if database is empty
+    const existingCount = await artworks.countDocuments()
+    if (existingCount === 0) {
+      const data = JSON.parse(fs.readFileSync('./data/artworks.json'))
+      await artworks.insertMany(data)
+      console.log('Inserted initial artworks')
+    } else {
+      console.log('ℹArtworks already exist, skipping insert')
+    }
+  
+    app.listen(3000, () => console.log('Server running on http://localhost:3000'))
+  }
+  
 startServer()
 
 // GET all
