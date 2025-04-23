@@ -7,24 +7,23 @@
   <link rel="stylesheet" href="style.css" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  
 </head>
 <body>      
-    <nav class="navbar">
-        <div class="nav-left">
-          <span class="logo">SimplyArt</span>
-          <a href="index.html" class="nav-link active">Home</a>
-          <a href="about.html" class="nav-link">About This Page</a>
-          <a href="#" class="nav-link">Browse</a>
-          <a href="#" class="nav-link">My Collection</a>
-        </div>
-        <div class="nav-right">
-          <a href="#" class="nav-link">Help</a>
-          <a href="#" class="cart-icon">
-            🛍️ <span class="cart-total">0 items</span>
-          </a>
-        </div>
-      </nav>
+  <nav class="navbar">
+    <div class="nav-left">
+      <span class="logo">SimplyArt</span>
+      <a href="index.html" class="nav-link active">Home</a>
+      <a href="about.html" class="nav-link">About This Page</a>
+      <a href="#" class="nav-link">Browse</a>
+      <a href="#" class="nav-link">My Collection</a>
+    </div>
+    <div class="nav-right">
+      <a href="#" class="nav-link">Help</a>
+      <a href="#" class="cart-icon">
+        🛍️ <span class="cart-total">0 items</span>
+      </a>
+    </div>
+  </nav>
 
   <!-- Hero Header -->
   <header class="hero">
@@ -58,24 +57,21 @@
     <button class="btn btn-success" onclick="addOrUpdateArtwork()">Save</button>
   </div>
 
-
-
-  
   <!-- Gallery -->
   <main class="gallery-section">
     <h2 class="gallery-title">Gallery</h2>
 
-    <div class="category-filters">
-        <button onclick="filterArtworks('all')">All</button>
-        <button onclick="filterArtworks('gelatin silver photograph')">Photography</button>
-        <button onclick="filterArtworks('ink')">Ink</button>
-        <button onclick="filterArtworks('graphite')">Graphite</button>
-        <button onclick="filterArtworks('watercolor')">Watercolor</button>
+    <div class="filter-sort-bar">
+      <div class="category-filters">
+        <button onclick="applyFilterSort('all')">All</button>
+        <button onclick="applyFilterSort('gelatin silver photograph')">Photography</button>
+        <button onclick="applyFilterSort('ink')">Ink</button>
+        <button onclick="applyFilterSort('graphite')">Graphite</button>
+        <button onclick="applyFilterSort('watercolor')">Watercolor</button>
       </div>
-
       <div class="sort-bar">
         <label for="sortSelect">Sort by:</label>
-        <select id="sortSelect" onchange="sortArtworks()">
+        <select id="sortSelect" onchange="applyFilterSort()">
           <option value="default">Default</option>
           <option value="year-desc">Year (Newest → Oldest)</option>
           <option value="year-asc">Year (Oldest → Newest)</option>
@@ -83,143 +79,56 @@
           <option value="title-desc">Title (Z → A)</option>
         </select>
       </div>
-      
+    </div>
 
     <div id="gallery" class="gallery-grid"></div>
   </main>
 
-  
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.js"></script>
   <script>
-    let editing = false;
+    let currentFilter = 'all';
 
     function toggleForm() {
       document.getElementById("form-panel").classList.toggle("hidden");
     }
 
-    function loadArtworks() {
+    function applyFilterSort(filterCategory = null) {
+      if (filterCategory !== null) currentFilter = filterCategory;
+      const sortValue = document.getElementById('sortSelect').value;
+
       fetch('http://localhost:3000/api/artworks')
         .then(res => res.json())
         .then(data => {
-          const gallery = document.getElementById('gallery')
-          gallery.innerHTML = ''
-          data.forEach(art => {
-            const card = document.createElement('div')
-            card.className = 'card'
+          let filtered = currentFilter === 'all'
+            ? data
+            : data.filter(art => art.medium?.toLowerCase().includes(currentFilter.toLowerCase()));
 
-            card.innerHTML = `
-              ${art.image ? `<img src="${art.image}" class="card-img" alt="${art.title}">` : ''}
-              <div class="card-body">
-                <h5>${art.title || 'Untitled'}</h5>
-                <p><strong>${art.artist || 'Unknown'} · ${art.year || 'Year Unknown'}</strong></p>
-                <p>${art.medium || 'Medium Unknown'}</p>
-                <button class="btn btn-danger btn-sm" onclick="deleteArtwork(${art.id})">Delete</button>
-                <button class="btn btn-info btn-sm" onclick='editArtwork(${JSON.stringify(art)})'>Edit</button>
-              </div>
-            `
-            gallery.appendChild(card)
-          })
-        })
-        .catch(err => console.error('Error:', err))
-    }
-
-    function addOrUpdateArtwork() {
-      const id = document.getElementById('edit-id').value
-      const title = document.getElementById('title').value
-      const artist = document.getElementById('artist').value
-      const year = parseInt(document.getElementById('year').value)
-      const medium = document.getElementById('medium').value
-      const image = document.getElementById('image').value
-
-      if (!title || !artist || !year) return alert("Please fill required fields")
-
-      const payload = { title, artist, year, medium, image }
-
-      const method = id ? 'PUT' : 'POST'
-      const url = id ? `http://localhost:3000/api/artworks/${id}` : `http://localhost:3000/api/artworks`
-      if (!id) payload.id = Math.floor(Math.random() * 100000)
-
-      fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      }).then(() => {
-        document.getElementById('edit-id').value = ''
-        document.getElementById('title').value = ''
-        document.getElementById('artist').value = ''
-        document.getElementById('year').value = ''
-        document.getElementById('medium').value = ''
-        document.getElementById('image').value = ''
-        document.getElementById("form-panel").classList.add("hidden")
-        loadArtworks()
-      })
-    }
-
-    function deleteArtwork(id) {
-      fetch(`http://localhost:3000/api/artworks/${id}`, {
-        method: 'DELETE'
-      }).then(() => loadArtworks())
-    }
-
-    function editArtwork(art) {
-      document.getElementById('edit-id').value = art.id
-      document.getElementById('title').value = art.title || ''
-      document.getElementById('artist').value = art.artist || ''
-      document.getElementById('year').value = art.year || ''
-      document.getElementById('medium').value = art.medium || ''
-      document.getElementById('image').value = art.image || ''
-      document.getElementById("form-panel").classList.remove("hidden")
-    }
-
-    function searchArtworks() {
-    const query = document.getElementById('searchInput').value.toLowerCase()
-
-    fetch('http://localhost:3000/api/artworks')
-        .then(res => res.json())
-        .then(data => {
-        const filtered = data.filter(art =>
-            art.title?.toLowerCase().includes(query) ||
-            art.artist?.toLowerCase().includes(query)
-        )
-        renderGallery(filtered)
-        })
-        .catch(err => console.error('Search error:', err))
-    }
-
-    function sortArtworks() {
-    const sortValue = document.getElementById('sortSelect').value;
-
-    fetch('http://localhost:3000/api/artworks')
-        .then(res => res.json())
-        .then(data => {
-        let sorted = [...data];
-
-        switch (sortValue) {
+          switch (sortValue) {
             case 'year-desc':
-            sorted.sort((a, b) => (b.year || 0) - (a.year || 0));
-            break;
+              filtered.sort((a, b) => (b.year || 0) - (a.year || 0));
+              break;
             case 'year-asc':
-            sorted.sort((a, b) => (a.year || 0) - (b.year || 0));
-            break;
+              filtered.sort((a, b) => (a.year || 0) - (b.year || 0));
+              break;
             case 'title-asc':
-            sorted.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
-            break;
+              filtered.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+              break;
             case 'title-desc':
-            sorted.sort((a, b) => (b.title || '').localeCompare(a.title || ''));
-            break;
-        }
+              filtered.sort((a, b) => (b.title || '').localeCompare(a.title || ''));
+              break;
+          }
 
-        renderGallery(sorted);
-        })
-        .catch(err => console.error('Sort error:', err));
+          renderGallery(filtered);
+
+          document.querySelectorAll('.category-filters button').forEach(btn => btn.classList.remove('active'));
+          document.querySelector(`.category-filters button[onclick*="${currentFilter}"]`)?.classList.add('active');
+        });
     }
-
 
     function renderGallery(data) {
-    const gallery = document.getElementById('gallery')
-    gallery.innerHTML = ''
-    data.forEach(art => {
+      const gallery = document.getElementById('gallery')
+      gallery.innerHTML = ''
+      data.forEach(art => {
         const card = document.createElement('div')
         card.className = 'card'
         card.innerHTML = `
@@ -233,32 +142,11 @@
         </div>
         `
         gallery.appendChild(card)
-    })
+      })
     }
 
-    function filterArtworks(category) {
-    fetch('http://localhost:3000/api/artworks')
-        .then(res => res.json())
-        .then(data => {
-        const filtered = category === 'all'
-            ? data
-            : data.filter(art => art.medium?.toLowerCase().includes(category.toLowerCase()));
-
-        renderGallery(filtered);
-
-        // Highlight active button
-        document.querySelectorAll('.category-filters button').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelector(`.category-filters button[onclick*="${category}"]`)?.classList.add('active');
-        })
-        .catch(err => console.error('Filter error:', err));
-    }
-
-
-
-    // Load artworks on page load
-    loadArtworks()
+    // Initial load
+    window.onload = () => applyFilterSort();
   </script>
 </body>
 </html>
