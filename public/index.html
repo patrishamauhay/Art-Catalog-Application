@@ -1,18 +1,54 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Art Gallery</title>
+
+    <!-- MDBootstrap -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.css" rel="stylesheet" />
+    <!-- Link external CSS -->
+    <link rel="stylesheet" href="style.css" />
+
 </head>
 <body>
-  <h1>Artworks</h1>
-  <button onclick="loadArtworks()">Load All</button>
-  <div id="gallery"></div>
-  <h2>Add Artwork</h2>
-  <input id="title" placeholder="Title" />
-  <input id="artist" placeholder="Artist" />
-  <input id="year" placeholder="Year" type="number" />
-  <button onclick="addArtwork()">Add</button>
 
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Left Panel: Forms -->
+      <div class="col-md-4 form-section shadow-sm">
+        <h4 class="mb-3">Artwork Controls</h4>
+
+        <button class="btn btn-primary mb-3" onclick="loadArtworks()">Load All Artworks</button>
+
+        <h5>Add Artwork</h5>
+        <input id="title" class="form-control mb-2" placeholder="Title" />
+        <input id="artist" class="form-control mb-2" placeholder="Artist" />
+        <input id="year" class="form-control mb-2" placeholder="Year" type="number" />
+        <input id="medium" class="form-control mb-2" placeholder="Medium" />
+        <input id="image" class="form-control mb-2" placeholder="Image URL (optional)" />
+        <button class="btn btn-success mb-4" onclick="addArtwork()">Add</button>
+
+        <h5>Edit Artwork</h5>
+        <input id="edit-id" type="hidden" />
+        <input id="edit-title" class="form-control mb-2" placeholder="Title" />
+        <input id="edit-artist" class="form-control mb-2" placeholder="Artist" />
+        <input id="edit-year" class="form-control mb-2" placeholder="Year" type="number" />
+        <input id="edit-medium" class="form-control mb-2" placeholder="Medium" />
+        <input id="edit-image" class="form-control mb-2" placeholder="Image URL" />
+        <button class="btn btn-warning" onclick="updateArtwork()">Update</button>
+      </div>
+
+      <!-- Right Panel: Gallery -->
+      <div class="col-md-8">
+        <h4 class="mb-3">Gallery</h4>
+        <div id="gallery" class="art-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MDBootstrap JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.js"></script>
 
   <script>
     function loadArtworks() {
@@ -22,51 +58,100 @@
           const gallery = document.getElementById('gallery')
           gallery.innerHTML = ''
           data.forEach(art => {
-            const div = document.createElement('div')
-            div.innerHTML = `
-            ${art.title} by ${art.artist} (${art.year})
-            <button onclick="deleteArtwork(${art.id})">Delete</button>
+            const card = document.createElement('div')
+            card.className = 'card'
+
+            card.innerHTML = `
+              ${art.image ? `<img src="${art.image}" class="card-img-top" alt="${art.title}">` : ''}
+              <div class="card-body">
+                <h5 class="card-title">${art.title || 'Untitled'} (${art.year || 'Unknown'})</h5>
+                <p class="card-text"><strong>Artist:</strong> ${art.artist || 'Unknown'}<br>
+                <strong>Medium:</strong> ${art.medium || 'Unknown'}</p>
+                <button class="btn btn-danger btn-sm" onclick="deleteArtwork(${art.id})">Delete</button>
+                <button class="btn btn-info btn-sm" onclick='editArtwork(${JSON.stringify(art)})'>Edit</button>
+              </div>
             `
-            gallery.appendChild(div)
+            gallery.appendChild(card)
           })
         })
         .catch(err => console.error('Fetch error:', err))
     }
 
     function addArtwork() {
-    const title = document.getElementById('title').value
-    const artist = document.getElementById('artist').value
-    const year = parseInt(document.getElementById('year').value)
+      const title = document.getElementById('title').value
+      const artist = document.getElementById('artist').value
+      const year = parseInt(document.getElementById('year').value)
+      const medium = document.getElementById('medium').value
+      const image = document.getElementById('image').value
 
-    if (!title || !artist || !year) {
-        alert('Please fill all fields')
+      if (!title || !artist || !year) {
+        alert('Please fill all required fields')
         return
-    }
+      }
 
-    fetch('http://localhost:3000/api/artworks', {
+      fetch('http://localhost:3000/api/artworks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-        id: Math.floor(Math.random() * 100000), // temporary ID
-        title, artist, year
+          id: Math.floor(Math.random() * 100000),
+          title, artist, year, medium, image
         })
-    })
-    .then(() => {
+      })
+      .then(() => {
         loadArtworks()
         document.getElementById('title').value = ''
         document.getElementById('artist').value = ''
         document.getElementById('year').value = ''
-    })
+        document.getElementById('medium').value = ''
+        document.getElementById('image').value = ''
+      })
     }
 
     function deleteArtwork(id) {
-    fetch(`http://localhost:3000/api/artworks/${id}`, {
+      fetch(`http://localhost:3000/api/artworks/${id}`, {
         method: 'DELETE'
-    })
-    .then(() => loadArtworks())
+      })
+      .then(() => loadArtworks())
     }
 
+    function editArtwork(art) {
+      document.getElementById('edit-id').value = art.id
+      document.getElementById('edit-title').value = art.title || ''
+      document.getElementById('edit-artist').value = art.artist || ''
+      document.getElementById('edit-year').value = art.year || ''
+      document.getElementById('edit-medium').value = art.medium || ''
+      document.getElementById('edit-image').value = art.image || ''
+    }
 
+    function updateArtwork() {
+      const id = parseInt(document.getElementById('edit-id').value)
+      const title = document.getElementById('edit-title').value
+      const artist = document.getElementById('edit-artist').value
+      const year = parseInt(document.getElementById('edit-year').value)
+      const medium = document.getElementById('edit-medium').value
+      const image = document.getElementById('edit-image').value
+
+      if (!title || !artist || !year || !id) {
+        alert('Fill all edit fields first!')
+        return
+      }
+
+      fetch(`http://localhost:3000/api/artworks/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, artist, year, medium, image })
+      })
+      .then(() => {
+        loadArtworks()
+        document.getElementById('edit-id').value = ''
+        document.getElementById('edit-title').value = ''
+        document.getElementById('edit-artist').value = ''
+        document.getElementById('edit-year').value = ''
+        document.getElementById('edit-medium').value = ''
+        document.getElementById('edit-image').value = ''
+      })
+    }
   </script>
+
 </body>
 </html>

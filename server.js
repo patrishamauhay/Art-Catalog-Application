@@ -32,9 +32,10 @@ startServer()
 
 // GET all
 app.get('/api/artworks', async (req, res) => {
-  const results = await artworks.find().toArray()
-  res.json(results)
-})
+    const results = await artworks.find().limit(20).toArray() // ← only 50
+    res.json(results)
+  })
+  
 
 // POST new
 app.post('/api/artworks', async (req, res) => {
