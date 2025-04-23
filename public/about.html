@@ -1,7 +1,24 @@
-<h2>About This Page</h2>
-<ul>
-  <li>This app displays artworks using a Node.js backend and MongoDB.</li>
-  <li>The server uses Express.js and an in-memory MongoDB instance.</li>
-  <li>Weaknesses: No login system, no real DB persistence.</li>
-  <li>Alternatives: Use React for frontend, real MongoDB cloud, JWT auth.</li>
-</ul>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About This Page</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-left">
+      <span class="logo">ArtVision</span>
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="about.html" class="nav-link active">About This Page</a>
+    </div>
+  </nav>
+
+  <div style="padding: 100px 40px;">
+    <h1>About This Page</h1>
+    <p>This art gallery web app was developed for the EAD 2025 final assignment. It showcases artworks dynamically loaded from a MongoDB-backed Node.js server, allows adding and editing records, and was styled with inspiration from real-world gallery sites.</p>
+    <p>Students can use this interface to practice full-stack development using Express, static front-end styling, and RESTful CRUD functionality.</p>
+  </div>
+</body>
+</html>

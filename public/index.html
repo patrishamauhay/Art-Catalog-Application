@@ -9,10 +9,26 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   
 </head>
-<body>
+<body>      
+    <nav class="navbar">
+        <div class="nav-left">
+          <span class="logo">SimplyArt</span>
+          <a href="index.html" class="nav-link active">Home</a>
+          <a href="about.html" class="nav-link">About This Page</a>
+          <a href="#" class="nav-link">Browse</a>
+          <a href="#" class="nav-link">My Collection</a>
+        </div>
+        <div class="nav-right">
+          <a href="#" class="nav-link">Help</a>
+          <a href="#" class="cart-icon">
+            🛍️ <span class="cart-total">0 items</span>
+          </a>
+        </div>
+      </nav>
 
   <!-- Hero Header -->
   <header class="hero">
+    <div class="hero-overlay"></div>
     <div class="hero-content">
       <h1>DISCOVER THE WORLD OF ART</h1>
       <p>Explore, add, and manage curated artwork collections</p>
@@ -42,11 +58,37 @@
     <button class="btn btn-success" onclick="addOrUpdateArtwork()">Save</button>
   </div>
 
+
+
+  
   <!-- Gallery -->
   <main class="gallery-section">
     <h2 class="gallery-title">Gallery</h2>
+
+    <div class="category-filters">
+        <button onclick="filterArtworks('all')">All</button>
+        <button onclick="filterArtworks('gelatin silver photograph')">Photography</button>
+        <button onclick="filterArtworks('ink')">Ink</button>
+        <button onclick="filterArtworks('graphite')">Graphite</button>
+        <button onclick="filterArtworks('watercolor')">Watercolor</button>
+      </div>
+
+      <div class="sort-bar">
+        <label for="sortSelect">Sort by:</label>
+        <select id="sortSelect" onchange="sortArtworks()">
+          <option value="default">Default</option>
+          <option value="year-desc">Year (Newest → Oldest)</option>
+          <option value="year-asc">Year (Oldest → Newest)</option>
+          <option value="title-asc">Title (A → Z)</option>
+          <option value="title-desc">Title (Z → A)</option>
+        </select>
+      </div>
+      
+
     <div id="gallery" class="gallery-grid"></div>
   </main>
+
+  
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.js"></script>
   <script>
@@ -145,6 +187,35 @@
         .catch(err => console.error('Search error:', err))
     }
 
+    function sortArtworks() {
+    const sortValue = document.getElementById('sortSelect').value;
+
+    fetch('http://localhost:3000/api/artworks')
+        .then(res => res.json())
+        .then(data => {
+        let sorted = [...data];
+
+        switch (sortValue) {
+            case 'year-desc':
+            sorted.sort((a, b) => (b.year || 0) - (a.year || 0));
+            break;
+            case 'year-asc':
+            sorted.sort((a, b) => (a.year || 0) - (b.year || 0));
+            break;
+            case 'title-asc':
+            sorted.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+            break;
+            case 'title-desc':
+            sorted.sort((a, b) => (b.title || '').localeCompare(a.title || ''));
+            break;
+        }
+
+        renderGallery(sorted);
+        })
+        .catch(err => console.error('Sort error:', err));
+    }
+
+
     function renderGallery(data) {
     const gallery = document.getElementById('gallery')
     gallery.innerHTML = ''
@@ -164,6 +235,26 @@
         gallery.appendChild(card)
     })
     }
+
+    function filterArtworks(category) {
+    fetch('http://localhost:3000/api/artworks')
+        .then(res => res.json())
+        .then(data => {
+        const filtered = category === 'all'
+            ? data
+            : data.filter(art => art.medium?.toLowerCase().includes(category.toLowerCase()));
+
+        renderGallery(filtered);
+
+        // Highlight active button
+        document.querySelectorAll('.category-filters button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`.category-filters button[onclick*="${category}"]`)?.classList.add('active');
+        })
+        .catch(err => console.error('Filter error:', err));
+    }
+
 
 
     // Load artworks on page load
