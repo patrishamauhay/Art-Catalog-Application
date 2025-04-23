@@ -4,10 +4,40 @@
   <meta charset="UTF-8" />
   <title>Artwork Details</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body>
+  <nav class="navbar">
+    <div class="nav-left">
+      <span class="logo">SimplyArt</span>
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="about.html" class="nav-link">About This Page</a>
+      <a href="#" class="nav-link">Browse</a>
+      <a href="#" class="nav-link">My Collection</a>
+    </div>
+    <div class="nav-right">
+      <a href="#" class="nav-link">Help</a>
+      <a href="#" class="cart-icon" id="cart-icon" onclick="toggleCart()">
+        🛍️ <span class="cart-total">0 items</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Cart Panel -->
+  <div id="cart-panel" class="cart-panel hidden">
+    <h4>Your Cart</h4>
+    <div id="cart-items-container">
+      <!-- Cart items will be added here -->
+    </div>
+    <div class="cart-summary">
+      <div class="cart-total-price">Total: $<span id="cart-total-price">0</span></div>
+      <button class="btn btn-success" onclick="checkout()">Checkout</button>
+      <button class="btn btn-danger" onclick="clearCart()">Clear Cart</button>
+    </div>
+  </div>
+
   <div class="details-container">
-    <button onclick="history.back()" class="btn-back">← Back</button>
+    <button onclick="goBack()" class="btn-back">← Back</button>
     <div class="details-card">
       <img id="detail-image" class="details-img" />
       <div class="details-info">
@@ -15,18 +45,195 @@
         <p><strong>Artist:</strong> <span id="detail-artist"></span></p>
         <p><strong>Year:</strong> <span id="detail-year"></span></p>
         <p><strong>Medium:</strong> <span id="detail-medium"></span></p>
+        <div class="details-price-section">
+          <p class="details-price">$<span id="detail-price"></span></p>
+          <button id="cart-button" class="add-to-cart-btn">Add to Cart</button>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    const data = JSON.parse(localStorage.getItem('selectedArtwork'));
-    if (data) {
-      document.getElementById('detail-image').src = data.image || '';
-      document.getElementById('detail-title').textContent = data.title || 'Untitled';
-      document.getElementById('detail-artist').textContent = data.artist || 'Unknown';
-      document.getElementById('detail-year').textContent = data.year || 'Unknown';
-      document.getElementById('detail-medium').textContent = data.medium || 'Unknown';
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let artwork = null;
+    
+    // Check if cart panel should be visible
+    const cartPanelVisible = localStorage.getItem('cartPanelVisible') === 'true';
+    if (cartPanelVisible) {
+      document.getElementById("cart-panel").classList.remove("hidden");
+    }
+
+    window.onload = function() {
+      // Load artwork data
+      artwork = JSON.parse(localStorage.getItem('selectedArtwork'));
+      if (artwork) {
+        document.getElementById('detail-image').src = artwork.image || '';
+        document.getElementById('detail-title').textContent = artwork.title || 'Untitled';
+        document.getElementById('detail-artist').textContent = artwork.artist || 'Unknown';
+        document.getElementById('detail-year').textContent = artwork.year || 'Unknown';
+        document.getElementById('detail-medium').textContent = artwork.medium || 'Unknown';
+        document.getElementById('detail-price').textContent = artwork.price || '0';
+        
+        // Set cart button state
+        updateCartButtonState();
+      }
+
+      // Update cart display
+      updateCartDisplay();
+      
+      // If cart panel is visible, render cart items
+      if (cartPanelVisible) {
+        renderCartItems();
+      }
+    };
+
+    function toggleCart() {
+      const cartPanel = document.getElementById("cart-panel");
+      const isHidden = cartPanel.classList.toggle("hidden");
+      // Store cart panel visibility state
+      localStorage.setItem('cartPanelVisible', !isHidden);
+      renderCartItems();
+    }
+
+    function updateCartButtonState() {
+      const cartButton = document.getElementById('cart-button');
+      const isInCart = cart.some(item => item.id === artwork.id);
+      
+      if (isInCart) {
+        cartButton.textContent = 'Remove from Cart';
+        cartButton.classList.add('in-cart');
+        cartButton.onclick = function() { removeFromCart(artwork); };
+      } else {
+        cartButton.textContent = 'Add to Cart';
+        cartButton.classList.remove('in-cart');
+        cartButton.onclick = function() { addToCart(artwork); };
+      }
+    }
+
+    function addToCart(item) {
+      // Check if item is already in cart
+      const existingItemIndex = cart.findIndex(cartItem => cartItem.id === item.id);
+      
+      if (existingItemIndex !== -1) {
+        // If item exists, increase quantity
+        cart[existingItemIndex].quantity += 1;
+      } else {
+        // Otherwise add new item with quantity 1
+        cart.push({...item, quantity: 1});
+      }
+      
+      saveCart();
+      updateCartDisplay();
+      updateCartButtonState();
+      renderCartItems();
+    }
+
+    function removeFromCart(item) {
+      cart = cart.filter(cartItem => cartItem.id !== item.id);
+      saveCart();
+      updateCartDisplay();
+      updateCartButtonState();
+      renderCartItems();
+    }
+
+    function updateCartDisplay() {
+      const cartTotal = document.querySelector('.cart-total');
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      cartTotal.textContent = `${totalItems} item${totalItems !== 1 ? 's' : ''}`;
+    }
+
+    function renderCartItems() {
+      const cartContainer = document.getElementById('cart-items-container');
+      cartContainer.innerHTML = '';
+      
+      if (cart.length === 0) {
+        cartContainer.innerHTML = '<p class="empty-cart">Your cart is empty</p>';
+        document.getElementById('cart-total-price').textContent = '0';
+        return;
+      }
+      
+      let totalPrice = 0;
+      
+      cart.forEach(item => {
+        const itemPrice = item.price * item.quantity;
+        totalPrice += itemPrice;
+        
+        const cartItem = document.createElement('div');
+        cartItem.className = 'cart-item';
+        cartItem.innerHTML = `
+          <div class="cart-item-img">
+            <img src="${item.image}" alt="${item.title}">
+          </div>
+          <div class="cart-item-details">
+            <h5>${item.title}</h5>
+            <p>${item.artist}</p>
+            <p>$${item.price}</p>
+          </div>
+          <div class="cart-item-actions">
+            <button onclick="removeCartItem(${item.id})">
+              <i class="fas fa-trash"></i>
+            </button>
+            <div class="quantity-controls">
+              <button onclick="updateQuantity(${item.id}, ${item.quantity - 1})" ${item.quantity <= 1 ? 'disabled' : ''}>-</button>
+              <span>${item.quantity}</span>
+              <button onclick="updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
+            </div>
+          </div>
+        `;
+        cartContainer.appendChild(cartItem);
+      });
+      
+      document.getElementById('cart-total-price').textContent = totalPrice.toFixed(2);
+    }
+
+    function removeCartItem(id) {
+      cart = cart.filter(item => item.id !== id);
+      saveCart();
+      updateCartDisplay();
+      renderCartItems();
+      
+      // Update button state if we're viewing this item's details
+      if (artwork && artwork.id === id) {
+        updateCartButtonState();
+      }
+    }
+
+    function updateQuantity(id, newQuantity) {
+      if (newQuantity < 1) return;
+      
+      const itemIndex = cart.findIndex(item => item.id === id);
+      if (itemIndex !== -1) {
+        cart[itemIndex].quantity = newQuantity;
+        saveCart();
+        updateCartDisplay();
+        renderCartItems();
+      }
+    }
+
+    function clearCart() {
+      cart = [];
+      saveCart();
+      updateCartDisplay();
+      renderCartItems();
+      updateCartButtonState();
+    }
+
+    function checkout() {
+      alert('Thank you for your purchase!');
+      clearCart();
+      // Hide cart panel and update localStorage
+      document.getElementById('cart-panel').classList.add('hidden');
+      localStorage.setItem('cartPanelVisible', 'false');
+    }
+
+    function saveCart() {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
+    
+    function goBack() {
+      // Ensure cart state is saved before navigating back
+      saveCart();
+      window.location.href = 'index.html';
     }
   </script>
 </body>
