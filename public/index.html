@@ -130,20 +130,31 @@
       gallery.innerHTML = ''
       data.forEach(art => {
         const card = document.createElement('div')
-        card.className = 'card'
+        card.className = 'card';
         card.innerHTML = `
         ${art.image ? `<img src="${art.image}" class="card-img" alt="${art.title}">` : ''}
+        <div class="card-hover-overlay">
+        <button class="view-details-btn" onclick='viewDetails(${JSON.stringify(art)})'>View Details</button>
+        </div>
         <div class="card-body">
             <h5>${art.title || 'Untitled'}</h5>
-            <p><strong>${art.artist || 'Unknown'} · ${art.year || 'Year Unknown'}</strong></p>
-            <p>${art.medium || 'Medium Unknown'}</p>
-            <button class="btn btn-danger btn-sm" onclick="deleteArtwork(${art.id})">Delete</button>
-            <button class="btn btn-info btn-sm" onclick='editArtwork(${JSON.stringify(art)})'>Edit</button>
         </div>
         `
         gallery.appendChild(card)
       })
     }
+
+    function showDetails(art) {
+    alert(
+        `Title: ${art.title || 'Untitled'}\nArtist: ${art.artist || 'Unknown'}\nYear: ${art.year || 'Year Unknown'}\nMedium: ${art.medium || 'Medium Unknown'}`
+    );
+    }
+
+    function viewDetails(art) {
+    localStorage.setItem('selectedArtwork', JSON.stringify(art));
+    window.location.href = 'details.html';
+    }
+
 
     // Initial load
     window.onload = () => applyFilterSort();

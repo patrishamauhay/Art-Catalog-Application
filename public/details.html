@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Artwork Details</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="details-container">
+    <button onclick="history.back()" class="btn-back">← Back</button>
+    <div class="details-card">
+      <img id="detail-image" class="details-img" />
+      <div class="details-info">
+        <h2 id="detail-title">Title</h2>
+        <p><strong>Artist:</strong> <span id="detail-artist"></span></p>
+        <p><strong>Year:</strong> <span id="detail-year"></span></p>
+        <p><strong>Medium:</strong> <span id="detail-medium"></span></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const data = JSON.parse(localStorage.getItem('selectedArtwork'));
+    if (data) {
+      document.getElementById('detail-image').src = data.image || '';
+      document.getElementById('detail-title').textContent = data.title || 'Untitled';
+      document.getElementById('detail-artist').textContent = data.artist || 'Unknown';
+      document.getElementById('detail-year').textContent = data.year || 'Unknown';
+      document.getElementById('detail-medium').textContent = data.medium || 'Unknown';
+    }
+  </script>
+</body>
+</html>
