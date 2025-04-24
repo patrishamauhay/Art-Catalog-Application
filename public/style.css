@@ -17,7 +17,7 @@ body {
     color: white;
     text-align: center;
     margin-top: 0; 
-    padding-top: 0; 
+    padding-top: 80px; 
   }
    
   .hero-overlay {
@@ -322,23 +322,22 @@ body {
   
   /* Top Navigation Bar */
   .navbar {
-    position: absolute;
+    position: absolute;   /* keep it fixed on top of hero */
     top: 0;
     left: 0;
     width: 100%;
+    z-index: 10;
+    background-color: rgba(30, 30, 30, 0.7); /* still semi-transparent */
+    backdrop-filter: blur(10px);
+    color: white;
     padding: 12px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: rgba(30, 30, 30, 0.7); /* Increased opacity for visibility */
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    color: white;
-    z-index: 150; /* Increased z-index to ensure it's on top */
-    font-family: 'Segoe UI', sans-serif;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   }
+  
   
   .nav-left, .nav-right {
     display: flex;
