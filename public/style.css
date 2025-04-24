@@ -100,16 +100,17 @@ body {
   /* Cart Panel Styles */
   .cart-panel {
     position: fixed;
-    right: 25px;
-    top: 80px;
-    width: 350px;
-    max-height: 70vh;
-    background: white;
-    border-radius: 10px;
+    top: 90px;
+    right: 30px;
+    width: 360px;
+    max-height: 75vh;
+    background: #fff;
+    border-radius: 12px;
     padding: 20px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
     z-index: 1000;
     overflow-y: auto;
+    transition: all 0.3s ease;
   }
   
   .cart-panel.hidden {
@@ -118,9 +119,11 @@ body {
   
   .cart-panel h4 {
     margin-top: 0;
-    margin-bottom: 15px;
+    font-size: 20px;
+    font-weight: bold;
     padding-bottom: 10px;
     border-bottom: 1px solid #eee;
+    text-align: center;
   }
   
   .cart-item {
@@ -172,20 +175,24 @@ body {
   }
   
   .quantity-controls button {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    border: 1px solid #ddd;
-    background: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
+    border-radius: 4px;
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+    background-color: #f8f9fa;
+    border: 1px solid #ccc;
+    color: #333;
+  }
+  
+  .quantity-controls button:hover {
+    background-color: #ddd;
   }
   
   .quantity-controls span {
-    margin: 0 8px;
-    font-size: 14px;
+    font-weight: bold;
+    min-width: 20px;
+    text-align: center;
+    display: inline-block;
   }
   
   .cart-summary {
@@ -193,6 +200,36 @@ body {
     padding-top: 15px;
     border-top: 1px solid #eee;
   }
+
+  .cart-summary button {
+    width: 48%;
+    padding: 10px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .cart-summary .btn-success {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .cart-summary .btn-danger {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .cart-summary .btn-success:hover {
+    background-color: #218838;
+  }
+  
+  .cart-summary .btn-danger:hover {
+    background-color: #c82333;
+  }
+  
   
   .cart-total-price {
     font-weight: bold;
@@ -552,4 +589,64 @@ body {
   .cart-img:hover {
     transform: scale(1.1);
   }
+  
+  .account-dropdown {
+    position: relative;
+  }
+  
+  .account-btn {
+    background: none;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .account-menu {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background: white;
+    color: black;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+    min-width: 160px;
+  }
+  
+  .account-menu a {
+    text-decoration: none;
+    color: black;
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+  
+  .account-menu a:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .account-menu.hidden {
+    display: none;
+  }
+
+  .cart-item-actions button {
+    background: transparent;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #444;
+    transition: transform 0.2s ease;
+  }
+  
+  .cart-item-actions button:hover {
+    transform: scale(1.1);
+    color: red;
+  }
+  
   

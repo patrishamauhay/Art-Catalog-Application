@@ -16,9 +16,17 @@
       <a href="index.html" class="nav-link active">Home</a>
       <a href="about.html" class="nav-link">About This Page</a>
       <a href="#" class="nav-link">Browse</a>
-      <a href="#" class="nav-link">My Collection</a>
     </div>
     <div class="nav-right">
+          <button class="account-btn" onclick="toggleAccountMenu()">
+            My Account <i class="fas fa-caret-down"></i>
+          </button>
+          <div class="account-menu hidden">
+            <a href="profile.html">My Profile</a>
+            <a href="#" onclick="viewFavourites()">My Favourites</a>
+            <a href="#" onclick="signOut()">Sign Out</a>
+          </div>
+          
       <a href="#" class="cart-icon" id="cart-icon" onclick="toggleCart()">
         <img src="images/icons8-cart-30.png" alt="Cart" class="cart-img" /> 
         <span class="cart-total">0 items</span>
@@ -312,6 +320,15 @@
           console.error("Error searching artworks:", err);
         });
     }
+
+    function toggleAccountMenu() {
+      document.querySelector('.account-menu').classList.toggle('hidden');
+    }
+
+    function signOut() {
+      alert("You've been signed out!");
+    }
+
   </script>
 </body>
 </html>
