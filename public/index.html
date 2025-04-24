@@ -15,7 +15,7 @@
       <span class="logo">SimplyArt</span>
       <a href="index.html" class="nav-link active">Home</a>
       <a href="about.html" class="nav-link">About This Page</a>
-      <a href="#" class="nav-link">Browse</a>
+      <a href="#" class="nav-link">My Collection</a>
     </div>
     <div class="nav-right">
           <button class="account-btn" onclick="toggleAccountMenu()">
@@ -23,7 +23,7 @@
           </button>
           <div class="account-menu hidden">
             <a href="profile.html">My Profile</a>
-            <a href="#" onclick="viewFavourites()">My Favourites</a>
+            <a href="favourites.html" onclick="viewFavourites()">My Favourites</a>
             <a href="#" onclick="signOut()">Sign Out</a>
           </div>
           
@@ -198,7 +198,10 @@
         ${art.image ? `<img src="${art.image}" class="card-img" alt="${art.title}">` : ''}
         <div class="card-hover-overlay">
           <button class="view-details-btn" onclick='viewDetails(${JSON.stringify(art)})'>View Details</button>
-        </div>
+          <button class="favourite-btn" onclick='toggleFavourite(${JSON.stringify(art)})'>
+            <i class="fas fa-heart"></i>
+          </button>
+          </div>
         <div class="card-body">
             <h5>${art.title || 'Untitled'}</h5>
             <p class="artist">${art.artist || 'Unknown Artist'}</p>
@@ -328,6 +331,72 @@
     function signOut() {
       alert("You've been signed out!");
     }
+
+    // Hide cart or account menu when clicking outside
+    document.addEventListener('click', function (event) {
+      const cartPanel = document.getElementById('cart-panel');
+      const cartIcon = document.getElementById('cart-icon');
+      const accountMenu = document.querySelector('.account-menu');
+      const accountBtn = document.querySelector('.account-btn');
+
+      // If click is outside the cart panel and cart icon, hide cart
+      if (
+        cartPanel && !cartPanel.contains(event.target) &&
+        cartIcon && !cartIcon.contains(event.target)
+      ) {
+        cartPanel.classList.add('hidden');
+        localStorage.setItem('cartPanelVisible', 'false');
+      }
+
+      // If click is outside the account menu and button, hide account menu
+      if (
+        accountMenu && !accountMenu.contains(event.target) &&
+        accountBtn && !accountBtn.contains(event.target)
+      ) {
+        accountMenu.classList.add('hidden');
+      }
+    });
+
+    let favourites = JSON.parse(localStorage.getItem('favourites')) || [];
+
+function toggleFavourite(art) {
+  const exists = favourites.find(a => a.id === art.id);
+  if (exists) {
+    favourites = favourites.filter(a => a.id !== art.id);
+  } else {
+    favourites.push(art);
+  }
+  localStorage.setItem('favourites', JSON.stringify(favourites));
+  applyFilterSort(); // to re-render updated icons
+}
+
+function isFavourited(id) {
+  return favourites.some(a => a.id === id);
+}
+
+function renderGallery(data) {
+  const gallery = document.getElementById('gallery');
+  gallery.innerHTML = '';
+  data.forEach(art => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      ${art.image ? `<img src="${art.image}" class="card-img" alt="${art.title}">` : ''}
+      <div class="card-hover-overlay">
+        <button class="view-details-btn" onclick='viewDetails(${JSON.stringify(art)})'>View Details</button>
+        <button class="favourite-btn ${isFavourited(art.id) ? 'favourited' : ''}" onclick='toggleFavourite(${JSON.stringify(art)})'>
+          <i class="fas fa-heart"></i>
+        </button>
+      </div>
+      <div class="card-body">
+        <h5>${art.title || 'Untitled'}</h5>
+        <p class="artist">${art.artist || 'Unknown Artist'}</p>
+      </div>
+    `;
+    gallery.appendChild(card);
+  });
+}
+
 
   </script>
 </body>

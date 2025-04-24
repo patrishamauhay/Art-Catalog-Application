@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Favourites</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+  <!-- Navbar consistent with main site -->
+  <nav class="navbar">
+    <div class="nav-left">
+      <span class="logo">SimplyArt</span>
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="about.html" class="nav-link">About This Page</a>
+      <a href="#" class="nav-link">My Collection</a>
+    </div>
+    <div class="nav-right">
+      <div class="account-dropdown">
+        <button class="account-btn" onclick="toggleAccountMenu()">
+          My Account <i class="fas fa-caret-down"></i>
+        </button>
+        <div class="account-menu hidden">
+          <a href="profile.html">My Profile</a>
+          <a href="favourites.html">My Favourites</a>
+          <a href="#" onclick="signOut()">Sign Out</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="gallery-section">
+    <h2 class="gallery-title">Favourited Artworks</h2>
+    <div id="favouritesGallery" class="gallery-grid"></div>
+  </main>
+
+  <!-- Script to Load Favourites -->
+  <script>
+    const favs = JSON.parse(localStorage.getItem('favourites')) || [];
+    const container = document.getElementById('favouritesGallery');
+
+    if (favs.length === 0) {
+      container.innerHTML = '<p class="empty-cart">No favourites yet. Start hearting your favourite artworks!</p>';
+    } else {
+      favs.forEach(art => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${art.image}" class="card-img" alt="${art.title}">
+          <div class="card-body">
+            <h5>${art.title}</h5>
+            <p class="artist">${art.artist}</p>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function toggleAccountMenu() {
+      document.querySelector('.account-menu').classList.toggle('hidden');
+    }
+
+    function signOut() {
+      alert("You've been signed out!");
+    }
+
+    document.addEventListener('click', function (event) {
+      const accountMenu = document.querySelector('.account-menu');
+      const accountBtn = document.querySelector('.account-btn');
+      if (
+        accountMenu && !accountMenu.contains(event.target) &&
+        accountBtn && !accountBtn.contains(event.target)
+      ) {
+        accountMenu.classList.add('hidden');
+      }
+    });
+  </script>
+</body>
+</html>
