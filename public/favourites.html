@@ -3,79 +3,87 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>My Favourites</title>
+  <title>Simply Art Gallery</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
-<body>
-  <!-- Navbar consistent with main site -->
+<body>      
+
   <nav class="navbar">
     <div class="nav-left">
       <span class="logo">SimplyArt</span>
-      <a href="index.html" class="nav-link">Home</a>
+      <a href="index.html" class="nav-link ">Home</a>
       <a href="about.html" class="nav-link">About This Page</a>
       <a href="#" class="nav-link">My Collection</a>
     </div>
     <div class="nav-right">
-      <div class="account-dropdown">
-        <button class="account-btn" onclick="toggleAccountMenu()">
-          My Account <i class="fas fa-caret-down"></i>
-        </button>
-        <div class="account-menu hidden">
-          <a href="profile.html">My Profile</a>
-          <a href="favourites.html">My Favourites</a>
-          <a href="#" onclick="signOut()">Sign Out</a>
-        </div>
-      </div>
+          <button class="account-btn" onclick="toggleAccountMenu()">
+            My Account <i class="fas fa-caret-down"></i>
+          </button>
+          <div class="account-menu hidden">
+            <a href="profile.html">My Profile</a>
+            <a href="favourites.html" onclick="viewFavourites()">My Favourites</a>
+            <a href="#" onclick="signOut()">Sign Out</a>
+          </div>
+          
+      <a href="#" class="cart-icon" id="cart-icon" onclick="toggleCart()">
+        <img src="images/icons8-cart-30.png" alt="Cart" class="cart-img" /> 
+        <span class="cart-total">0 items</span>
+      </a>
     </div>
+
+      <!-- Cart Panel -->
+  <div id="cart-panel" class="cart-panel hidden">
+    <h4>Your Cart</h4>
+    <div id="cart-items-container">
+      <!-- Cart items will be added here -->
+    </div>
+    <div class="cart-summary">
+      <div class="cart-total-price">Total: $<span id="cart-total-price">0</span></div>
+      <button class="btn btn-success" onclick="checkout()">Checkout</button>
+      <button class="btn btn-danger" onclick="clearCart()">Clear Cart</button>
+    </div>
+  </div>
   </nav>
 
-  <!-- Main Content -->
-  <main class="gallery-section">
-    <h2 class="gallery-title">Favourited Artworks</h2>
-    <div id="favouritesGallery" class="gallery-grid"></div>
+    <!-- Main Content -->
+    <main class="gallery-section">
+        <h2 class="gallery-title">Favourite Artworks</h2>
+        <div id="favouritesGallery" class="gallery-grid"></div>
   </main>
 
-  <!-- Script to Load Favourites -->
-  <script>
-    const favs = JSON.parse(localStorage.getItem('favourites')) || [];
-    const container = document.getElementById('favouritesGallery');
-
-    if (favs.length === 0) {
-      container.innerHTML = '<p class="empty-cart">No favourites yet. Start hearting your favourite artworks!</p>';
-    } else {
-      favs.forEach(art => {
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.js"></script>
+    <!-- Script to Load Favourites -->
+    <script>
+        const favs = JSON.parse(localStorage.getItem('favourites')) || [];
+        const container = document.getElementById('favouritesGallery');
+    
+        if (favs.length === 0) {
+          container.innerHTML = '<p class="empty-cart">No favourites yet. Start hearting your favourite artworks!</p>';
+        } else {
+            favs.forEach(art => {
         const card = document.createElement('div');
-        card.className = 'card';
+        card.className = 'card position-relative';
         card.innerHTML = `
-          <img src="${art.image}" class="card-img" alt="${art.title}">
-          <div class="card-body">
+            <img src="${art.image}" class="card-img" alt="${art.title}">
+            <div class="card-hover-overlay">
+            <button class="view-details-btn" onclick='viewDetails(${JSON.stringify(art)})'>View Details</button>
+            </div>
+            <div class="card-body">
             <h5>${art.title}</h5>
             <p class="artist">${art.artist}</p>
-          </div>
+            </div>
         `;
         container.appendChild(card);
-      });
-    }
+        });
 
-    function toggleAccountMenu() {
-      document.querySelector('.account-menu').classList.toggle('hidden');
-    }
+        function viewDetails(art) {
+        localStorage.setItem('selectedArtwork', JSON.stringify(art));
+        window.location.href = 'details.html';
+        }
 
-    function signOut() {
-      alert("You've been signed out!");
-    }
-
-    document.addEventListener('click', function (event) {
-      const accountMenu = document.querySelector('.account-menu');
-      const accountBtn = document.querySelector('.account-btn');
-      if (
-        accountMenu && !accountMenu.contains(event.target) &&
-        accountBtn && !accountBtn.contains(event.target)
-      ) {
-        accountMenu.classList.add('hidden');
-      }
-    });
-  </script>
-</body>
+        }
+      </script>
+    </body>
 </html>

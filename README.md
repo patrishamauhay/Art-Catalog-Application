@@ -4,6 +4,7 @@
  - Category
  - Sort By
  - Add/Delete to Basket
+ - Favourites
 
  - Check out -> My Collection
  - Admin can CRUD art

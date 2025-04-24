@@ -2,29 +2,38 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Artwork Details</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Simply Art Gallery</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
-<body>
-    <nav class="navbar">
-        <div class="nav-left">
-          <span class="logo">SimplyArt</span>
-          <a href="index.html" class="nav-link active">Home</a>
-          <a href="about.html" class="nav-link">About This Page</a>
-          <a href="#" class="nav-link">Browse</a>
-          <a href="#" class="nav-link">My Collection</a>
-        </div>
-        <div class="nav-right">
-          <a href="#" class="cart-icon" id="cart-icon" onclick="toggleCart()">
-            <img src="images/icons8-cart-30.png" alt="Cart" class="cart-img" /> 
-            <span class="cart-total">0 items</span>
-          </a>
-          
-        </div>
-      </nav>
+<body>      
 
-  <!-- Cart Panel -->
+  <nav class="navbar">
+    <div class="nav-left">
+      <span class="logo">SimplyArt</span>
+      <a href="index.html" class="nav-link ">Home</a>
+      <a href="about.html" class="nav-link">About This Page</a>
+      <a href="#" class="nav-link">My Collection</a>
+    </div>
+    <div class="nav-right">
+          <button class="account-btn" onclick="toggleAccountMenu()">
+            My Account <i class="fas fa-caret-down"></i>
+          </button>
+          <div class="account-menu hidden">
+            <a href="profile.html">My Profile</a>
+            <a href="favourites.html" onclick="viewFavourites()">My Favourites</a>
+            <a href="#" onclick="signOut()">Sign Out</a>
+          </div>
+          
+      <a href="#" class="cart-icon" id="cart-icon" onclick="toggleCart()">
+        <img src="images/icons8-cart-30.png" alt="Cart" class="cart-img" /> 
+        <span class="cart-total">0 items</span>
+      </a>
+    </div>
+
+      <!-- Cart Panel -->
   <div id="cart-panel" class="cart-panel hidden">
     <h4>Your Cart</h4>
     <div id="cart-items-container">
@@ -36,6 +45,7 @@
       <button class="btn btn-danger" onclick="clearCart()">Clear Cart</button>
     </div>
   </div>
+  </nav>
 
   <div class="details-container">
     <button onclick="goBack()" class="btn-back">← Back</button>
@@ -54,6 +64,7 @@
     </div>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.js"></script>
   <script>
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     let artwork = null;
@@ -237,5 +248,5 @@
       window.location.href = 'index.html';
     }
   </script>
-</body>
+    </body>
 </html>

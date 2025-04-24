@@ -144,7 +144,6 @@
       fetch('http://localhost:3000/api/artworks')
         .then(res => res.json())
         .then(data => {
-          // Add default prices if missing
           data = data.map(art => {
             if (!art.price) art.price = Math.floor(Math.random() * 5000) + 500;
             return art;
