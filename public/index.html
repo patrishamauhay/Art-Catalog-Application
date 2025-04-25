@@ -34,17 +34,24 @@
     </div>
 
       <!-- Cart Panel -->
-  <div id="cart-panel" class="cart-panel hidden">
-    <h4>Your Cart</h4>
-    <div id="cart-items-container">
-      <!-- Cart items will be added here -->
+<div id="cart-panel" class="cart-panel hidden">
+  <div class="cart-header">
+    <h4><i class="fas fa-shopping-cart"></i> Your Cart</h4>
+    <button onclick="toggleCart()" class="close-cart-btn"><i class="fas fa-times"></i></button>
+  </div>
+  <div id="cart-items-container" class="cart-items-container"></div>
+  <div class="cart-summary">
+    <div class="cart-total-line">
+      <span>Total:</span>
+      <strong class="cart-total-price">$<span id="cart-total-price">0</span></strong>
     </div>
-    <div class="cart-summary">
-      <div class="cart-total-price">Total: $<span id="cart-total-price">0</span></div>
-      <button class="btn btn-success" onclick="checkout()">Checkout</button>
-      <button class="btn btn-danger" onclick="clearCart()">Clear Cart</button>
+    <div class="cart-actions">
+      <button class="btn btn-success w-100 mb-2" onclick="checkout()">Checkout</button>
+      <button class="btn btn-outline-danger w-100" onclick="clearCart()">Clear Cart</button>
     </div>
   </div>
+</div>
+
   </nav>
 
   <!-- Hero Header -->
@@ -242,25 +249,29 @@
         const cartItem = document.createElement('div');
         cartItem.className = 'cart-item';
         cartItem.innerHTML = `
-          <div class="cart-item-img">
-            <img src="${item.image}" alt="${item.title}">
-          </div>
-          <div class="cart-item-details">
-            <h5>${item.title}</h5>
-            <p>${item.artist}</p>
-            <p>$${item.price}</p>
-          </div>
-          <div class="cart-item-actions">
-            <button onclick="removeCartItem(${item.id})">
-              <i class="fas fa-trash"></i>
-            </button>
+        <div class="cart-item-img">
+          <img src="${item.image}" alt="${item.title}">
+        </div>
+        <div class="cart-item-details">
+          <h5>${item.title}</h5>
+          <p><strong>Price:</strong> $${item.price}</p>
+          <div class="quantity-row">
+            <strong>Quantity:</strong>
             <div class="quantity-controls">
               <button onclick="updateQuantity(${item.id}, ${item.quantity - 1})" ${item.quantity <= 1 ? 'disabled' : ''}>-</button>
               <span>${item.quantity}</span>
               <button onclick="updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
             </div>
           </div>
-        `;
+        </div>
+        <div class="cart-item-actions">
+          <button onclick="removeCartItem(${item.id})">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      `;
+
+
         cartContainer.appendChild(cartItem);
       });
       
