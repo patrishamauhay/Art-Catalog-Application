@@ -253,7 +253,7 @@ function renderCartItems() {
         <img src="${item.image}" alt="${item.title}">
       </div>
       <div class="cart-item-details">
-        <h5>${item.title}</h5>
+        <h5>${item.title || 'Untitled'} (${item.quantity})</h5> <!-- ✨ Now showing title + quantity -->
         <p><strong>Price:</strong> $${item.price}</p>
         <div class="quantity-row">
           <strong>Quantity:</strong>
@@ -274,6 +274,7 @@ function renderCartItems() {
 
   document.getElementById('cart-total-price').textContent = totalPrice.toFixed(2);
 }
+
 
 function viewDetails(art) {
   localStorage.setItem('selectedArtwork', JSON.stringify(art));
@@ -373,6 +374,24 @@ function toggleFavourite(art) {
 
 function isFavourited(id) {
   return favourites.some(a => a.id === id);
+}
+
+function addToCart(art) {
+  const existingItem = cart.find(item => item.id === art.id);
+  if (existingItem) {
+    existingItem.quantity++;
+  } else {
+    cart.push({
+      id: art.id,
+      title: art.title,
+      price: art.price,
+      image: art.image,
+      quantity: 1
+    });
+  }
+  saveCart();
+  updateCartDisplay();
+  renderCartItems();
 }
 
 </script>

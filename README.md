@@ -6,6 +6,7 @@
  - Add/Delete to Basket
  - Favourites
  - Paginate
+  - Filter
 
  - Check out -> My Collection
  - cart
