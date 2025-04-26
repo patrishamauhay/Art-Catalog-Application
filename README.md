@@ -5,8 +5,11 @@
  - Sort By
  - Add/Delete to Basket
  - Favourites
+ - Paginate
+
+
 
  - Check out -> My Collection
- - Admin can CRUD art
+ - Filter
 
 
