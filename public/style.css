@@ -96,9 +96,16 @@ body {
   .form-panel.hidden {
     display: none;
   }
+
+  .cart-item-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 6px;
+    word-break: break-word;
+  }
   
-  /* Cart Panel Styles */
-  .cart-panel {
+    .cart-panel {
     position: fixed;
     top: 80px;
     right: 30px;
@@ -175,7 +182,6 @@ body {
   }
 
 
-  
   .cart-item-actions {
     display: flex;
     flex-direction: column;
@@ -183,11 +189,53 @@ body {
     justify-content: space-between;
   }
   
+  .quantity-row {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    gap: 10px; 
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .quantity-row strong {
+    font-weight: bold;
+    min-width: 70px; 
+  }
+  
   .quantity-controls {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
   }
+  
+  
+  .quantity-controls button {
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+  }
+  
+  .quantity-controls button:hover {
+    background-color: #ddd;
+    transform: scale(1.1);
+  }
+  
+  .quantity-controls span {
+    min-width: 24px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    color: #000;
+  }
+  
 
   
   .cart-summary {
@@ -425,14 +473,13 @@ body {
     pointer-events: none;
   }
   
-  /* Top Navigation Bar */
   .navbar {
-    position: fixed;   /* keep it fixed on top of hero */
+    position: fixed; 
     top: 0;
     left: 0;
     width: 100%;
     z-index: 10;
-    background-color: rgba(30, 30, 30, 0.7); /* still semi-transparent */
+    background-color: rgba(30, 30, 30, 0.7); 
     backdrop-filter: blur(10px);
     color: white;
     padding: 12px 40px;

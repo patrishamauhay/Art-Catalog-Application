@@ -231,7 +231,37 @@ function updateCartDisplay() {
   cartTotal.textContent = `${totalItems} item${totalItems !== 1 ? 's' : ''}`;
 }
 
+function addToCart(art) {
+  console.log("Adding to cart:", art); // 📢 See what artwork you're adding
+
+  const existingItem = cart.find(item => item.id === art.id);
+  if (existingItem) {
+    existingItem.quantity++;
+    console.log("Item already exists, new quantity:", existingItem.quantity); // 📢 See quantity increment
+  } else {
+    cart.push({
+      id: art.id,
+      title: art.title,
+      artist: art.artist, // ✨ Add artist too for full display!
+      price: art.price,
+      image: art.image,
+      quantity: 1
+    });
+    console.log("New item added:", art.title); // 📢 Confirm new addition
+  }
+  saveCart();
+  updateCartDisplay();
+  renderCartItems();
+}
+
+function saveCart() {
+  console.log("Saving cart:", cart); // 📢 Print whole cart before saving
+  localStorage.setItem('cart', JSON.stringify(cart));
+}
+
 function renderCartItems() {
+  console.log("Rendering cart items:", cart); // 📢 What are we trying to render
+
   const cartContainer = document.getElementById('cart-items-container');
   cartContainer.innerHTML = '';
 
@@ -242,38 +272,44 @@ function renderCartItems() {
   }
 
   let totalPrice = 0;
+
   cart.forEach(item => {
     const itemPrice = item.price * item.quantity;
     totalPrice += itemPrice;
 
+    console.log(`Rendering: ${item.title}, Quantity: ${item.quantity}`); // 📢 Detailed per item
+
     const cartItem = document.createElement('div');
     cartItem.className = 'cart-item';
     cartItem.innerHTML = `
-      <div class="cart-item-img">
-        <img src="${item.image}" alt="${item.title}">
+  <div class="cart-item-img">
+    <img src="${item.image}" alt="${item.title}">
+  </div>
+  <div class="cart-item-details">
+    <h5 class="cart-item-title">${item.title || 'Untitled'}</h5>
+    <p><strong>Artist:</strong> ${item.artist || 'Unknown Artist'}</p>
+    <p><strong>Price:</strong> $${item.price}</p>
+    <div class="quantity-row">
+      <strong>Quantity:</strong>
+      <div class="quantity-controls">
+        <button onclick="updateQuantity(${item.id}, ${item.quantity - 1})" ${item.quantity <= 1 ? 'disabled' : ''}>-</button>
+        <span>${item.quantity}</span>
+        <button onclick="updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
       </div>
-      <div class="cart-item-details">
-        <h5>${item.title || 'Untitled'} (${item.quantity})</h5> <!-- ✨ Now showing title + quantity -->
-        <p><strong>Price:</strong> $${item.price}</p>
-        <div class="quantity-row">
-          <strong>Quantity:</strong>
-          <div class="quantity-controls">
-            <button onclick="updateQuantity(${item.id}, ${item.quantity - 1})" ${item.quantity <= 1 ? 'disabled' : ''}>-</button>
-            <span>${item.quantity}</span>
-            <button onclick="updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
-          </div>
-        </div>
-      </div>
-      <div class="cart-item-actions">
-        <button onclick="removeCartItem(${item.id})"><i class="fas fa-trash"></i></button>
-      </div>
-    `;
+    </div>
+  </div>
+  <div class="cart-item-actions">
+    <button onclick="removeCartItem(${item.id})"><i class="fas fa-trash"></i></button>
+  </div>
+`;
+
 
     cartContainer.appendChild(cartItem);
   });
 
   document.getElementById('cart-total-price').textContent = totalPrice.toFixed(2);
 }
+
 
 
 function viewDetails(art) {
@@ -313,9 +349,6 @@ function checkout() {
   localStorage.setItem('cartPanelVisible', 'false');
 }
 
-function saveCart() {
-  localStorage.setItem('cart', JSON.stringify(cart));
-}
 
 function searchArtworks() {
   const searchTerm = document.getElementById('searchInput').value.toLowerCase();
@@ -376,23 +409,7 @@ function isFavourited(id) {
   return favourites.some(a => a.id === id);
 }
 
-function addToCart(art) {
-  const existingItem = cart.find(item => item.id === art.id);
-  if (existingItem) {
-    existingItem.quantity++;
-  } else {
-    cart.push({
-      id: art.id,
-      title: art.title,
-      price: art.price,
-      image: art.image,
-      quantity: 1
-    });
-  }
-  saveCart();
-  updateCartDisplay();
-  renderCartItems();
-}
+
 
 </script>
 
