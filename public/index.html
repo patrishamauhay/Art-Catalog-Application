@@ -2,407 +2,380 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Simply Art Gallery</title>
   <link rel="stylesheet" href="style.css" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
-<body>      
+<body>
 
-  <nav class="navbar">
-    <div class="nav-left">
-      <span class="logo">SimplyArt</span>
-      <a href="index.html" class="nav-link active">Home</a>
-      <a href="about.html" class="nav-link">About This Page</a>
-      <a href="#" class="nav-link">My Collection</a>
-    </div>
-    <div class="nav-right">
-          <button class="account-btn" onclick="toggleAccountMenu()">
-            My Account <i class="fas fa-caret-down"></i>
-          </button>
-          <div class="account-menu hidden">
-            <a href="profile.html">My Profile</a>
-            <a href="favourites.html" onclick="viewFavourites()">My Favourites</a>
-            <a href="#" onclick="signOut()">Sign Out</a>
-          </div>
-          
-      <a href="#" class="cart-icon" id="cart-icon" onclick="toggleCart()">
-        <img src="images/icons8-cart-30.png" alt="Cart" class="cart-img" /> 
-        <span class="cart-total">0 items</span>
-      </a>
-    </div>
-
-      <!-- Cart Panel -->
-<div id="cart-panel" class="cart-panel hidden">
-  <div class="cart-header">
-    <h4><i class="fas fa-shopping-cart"></i> Your Cart</h4>
-    <button onclick="toggleCart()" class="close-cart-btn"><i class="fas fa-times"></i></button>
+<nav class="navbar">
+  <div class="nav-left">
+    <span class="logo">SimplyArt</span>
+    <a href="index.html" class="nav-link active">Home</a>
+    <a href="about.html" class="nav-link">About This Page</a>
+    <a href="#" class="nav-link">My Collection</a>
   </div>
-  <div id="cart-items-container" class="cart-items-container"></div>
-  <div class="cart-summary">
-    <div class="cart-total-line">
-      <span>Total:</span>
-      <strong class="cart-total-price">$<span id="cart-total-price">0</span></strong>
+  <div class="nav-right">
+    <button class="account-btn" onclick="toggleAccountMenu()">
+      My Account <i class="fas fa-caret-down"></i>
+    </button>
+    <div class="account-menu hidden">
+      <a href="profile.html">My Profile</a>
+      <a href="favourites.html">My Favourites</a>
+      <a href="#" onclick="signOut()">Sign Out</a>
     </div>
-    <div class="cart-actions">
-      <button class="btn btn-success w-100 mb-2" onclick="checkout()">Checkout</button>
-      <button class="btn btn-outline-danger w-100" onclick="clearCart()">Clear Cart</button>
-    </div>
+
+    <a href="#" class="cart-icon" id="cart-icon" onclick="toggleCart()">
+      <img src="images/icons8-cart-30.png" alt="Cart" class="cart-img" />
+      <span class="cart-total">0 items</span>
+    </a>
   </div>
-</div>
 
-  </nav>
-
-  <!-- Hero Header -->
-  <header class="hero">
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-      <h1>DISCOVER THE WORLD OF ART</h1>
-      <p>Explore, add, and manage curated artwork collections</p>
-      <div class="search-wrapper">
-        <input type="text" id="searchInput" placeholder="Enter keywords..." />
-        <button onclick="searchArtworks()" class="search-button" aria-label="Search">
-          <i class="fas fa-search"></i>
-        </button>
-      </div>      
+  <!-- Cart Panel -->
+  <div id="cart-panel" class="cart-panel hidden">
+    <div class="cart-header">
+      <h4><i class="fas fa-shopping-cart"></i> Your Cart</h4>
+      <button onclick="toggleCart()" class="close-cart-btn"><i class="fas fa-times"></i></button>
     </div>
-  </header>
-
-  <!-- Gallery -->
-  <main class="gallery-section">
-    <h2 class="gallery-title">Gallery</h2>
-
-    <div class="filter-sort-bar">
-      <div class="category-filters">
-        <button onclick="applyFilterSort('all')">All</button>
-        <button onclick="applyFilterSort('gelatin silver photograph')">Photography</button>
-        <button onclick="applyFilterSort('ink')">Ink</button>
-        <button onclick="applyFilterSort('graphite')">Graphite</button>
-        <button onclick="applyFilterSort('watercolor')">Watercolor</button>
+    <div id="cart-items-container" class="cart-items-container"></div>
+    <div class="cart-summary">
+      <div class="cart-total-line">
+        <span>Total:</span>
+        <strong class="cart-total-price">$<span id="cart-total-price">0</span></strong>
       </div>
-      <div class="sort-bar">
-        <label for="sortSelect">Sort by:</label>
-        <select id="sortSelect" onchange="applyFilterSort()">
-          <option value="default">Default</option>
-          <option value="year-desc">Year (Newest → Oldest)</option>
-          <option value="year-asc">Year (Oldest → Newest)</option>
-          <option value="title-asc">Title (A → Z)</option>
-          <option value="title-desc">Title (Z → A)</option>
-        </select>
+      <div class="cart-actions">
+        <button class="btn btn-success w-100 mb-2" onclick="checkout()">Checkout</button>
+        <button class="btn btn-outline-danger w-100" onclick="clearCart()">Clear Cart</button>
       </div>
     </div>
+  </div>
+</nav>
 
-    <div id="gallery" class="gallery-grid"></div>
-    <div class="pagination-controls" style="text-align:center; margin-top: 30px;">
-      <button id="prevPageBtn" onclick="previousPage()" disabled>Previous</button>
-      <span id="pageInfo" style="margin: 0 15px;">Showing 1–20</span>
-      <button id="nextPageBtn" onclick="nextPage()">Next</button>
-    </div>    
-  </main>
+<!-- Hero Header -->
+<header class="hero">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1>DISCOVER THE WORLD OF ART</h1>
+    <p>Explore, add, and manage curated artwork collections</p>
+    <div class="search-wrapper">
+      <input type="text" id="searchInput" placeholder="Enter keywords..." />
+      <button onclick="searchArtworks()" class="search-button" aria-label="Search">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+  </div>
+</header>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.js"></script>
-  <script>
-    let currentFilter = 'all';
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    
-    let galleryData = [];
-    let currentPage = 1;
-    const itemsPerPage = 20;
+<!-- Gallery -->
+<main class="gallery-section">
+  <h2 class="gallery-title">Gallery</h2>
 
-    
-    // Update cart display on load and check cart panel visibility
-    window.onload = () => {
-      applyFilterSort();
-      updateCartDisplay();
-      
-      // Check if cart panel should be visible
-      const cartPanelVisible = localStorage.getItem('cartPanelVisible') === 'true';
-      if (cartPanelVisible) {
-        document.getElementById("cart-panel").classList.remove("hidden");
-        renderCartItems();
-      }
-    };
+  <div class="filter-sort-bar">
+    <div class="category-filters">
+      <button onclick="applyFilterSort('all')">All</button>
+      <button onclick="applyFilterSort('gelatin silver photograph')">Photography</button>
+      <button onclick="applyFilterSort('ink')">Ink</button>
+      <button onclick="applyFilterSort('graphite')">Graphite</button>
+      <button onclick="applyFilterSort('watercolor')">Watercolor</button>
+    </div>
+    <div class="sort-bar">
+      <label for="sortSelect">Sort by:</label>
+      <select id="sortSelect" onchange="applyFilterSort()">
+        <option value="default">Default</option>
+        <option value="year-desc">Year (Newest → Oldest)</option>
+        <option value="year-asc">Year (Oldest → Newest)</option>
+        <option value="title-asc">Title (A → Z)</option>
+        <option value="title-desc">Title (Z → A)</option>
+      </select>
+    </div>
+  </div>
 
-    function toggleForm() {
-      document.getElementById("form-panel").classList.toggle("hidden");
-    }
-    
-    function toggleCart() {
-      const cartPanel = document.getElementById("cart-panel");
-      const isHidden = cartPanel.classList.toggle("hidden");
-      localStorage.setItem('cartPanelVisible', !isHidden);
-      renderCartItems();
-    }
+  <div id="gallery" class="gallery-grid"></div>
+  <div class="pagination-controls" style="text-align:center; margin-top: 30px;">
+    <button id="prevPageBtn" onclick="previousPage()" disabled>Previous</button>
+    <span id="pageInfo" style="margin: 0 15px;">Showing 1–20</span>
+    <button id="nextPageBtn" onclick="nextPage()">Next</button>
+  </div>
+</main>
 
-    function applyFilterSort(filterCategory = null) {
-      if (filterCategory !== null) currentFilter = filterCategory;
-      const sortValue = document.getElementById('sortSelect').value;
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.js"></script>
+<script>
 
-      fetch('http://localhost:3000/api/artworks')
-        .then(res => res.json())
-        .then(data => {
-          data = data.map(art => {
-            if (!art.price) art.price = Math.floor(Math.random() * 5000) + 500;
-            return art;
-          });
-          
-          let filtered = currentFilter === 'all'
-            ? data
-            : data.filter(art => art.medium?.toLowerCase().includes(currentFilter.toLowerCase()));
+let currentFilter = 'all';
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+let galleryData = [];
+let currentPage = 1;
+const itemsPerPage = 20;
 
-          switch (sortValue) {
-            case 'year-desc':
-              filtered.sort((a, b) => (b.year || 0) - (a.year || 0));
-              break;
-            case 'year-asc':
-              filtered.sort((a, b) => (a.year || 0) - (b.year || 0));
-              break;
-            case 'title-asc':
-              filtered.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
-              break;
-            case 'title-desc':
-              filtered.sort((a, b) => (b.title || '').localeCompare(a.title || ''));
-              break;
-          }
+window.onload = async () => {
+  applyFilterSort();
+  updateCartDisplay();
 
-          renderGallery(filtered);
+  if (localStorage.getItem('cartPanelVisible') === 'true') {
+    document.getElementById("cart-panel").classList.remove("hidden");
+    renderCartItems();
+  }
+};
 
-          document.querySelectorAll('.category-filters button').forEach(btn => btn.classList.remove('active'));
-          document.querySelector(`.category-filters button[onclick*="${currentFilter}"]`)?.classList.add('active');
-        })
-        .catch(err => {
-          console.error("Error fetching artworks:", err);
-          const sampleArtworks = [
-            {id: 1, title: "Starry Night", artist: "Vincent van Gogh", year: 1889, medium: "Oil paint", price: 2500, image: "https://www.vangoghgallery.com/img/starry_night_full.jpg"},
-            {id: 2, title: "Sunset", artist: "Claude Monet", year: 1872, medium: "Watercolor", price: 1800, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Claude_Monet_-_Impression%2C_Sunrise.jpg/800px-Claude_Monet_-_Impression%2C_Sunrise.jpg"},
-            {id: 3, title: "Portrait", artist: "Pablo Picasso", year: 1937, medium: "Ink", price: 3200, image: "https://www.pablopicasso.org/images/paintings/girl-before-a-mirror.jpg"},
-            {id: 4, title: "Nature Study", artist: "Ansel Adams", year: 1941, medium: "Gelatin silver photograph", price: 1200, image: "https://www.anseladams.com/wp-content/uploads/2016/07/AA-Clearing-Winter-Storm.jpg"},
-            {id: 5, title: "Sketch", artist: "Leonardo da Vinci", year: 1503, medium: "Graphite", price: 4500, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Leonardo_self.jpg/330px-Leonardo_self.jpg"}
-          ];
-          renderGallery(sampleArtworks);
+function toggleCart() {
+  const cartPanel = document.getElementById("cart-panel");
+  const isHidden = cartPanel.classList.toggle("hidden");
+  localStorage.setItem('cartPanelVisible', !isHidden);
+  renderCartItems();
+}
+
+function applyFilterSort(filterCategory = null) {
+  if (filterCategory !== null) currentFilter = filterCategory;
+
+  const sortValue = document.getElementById('sortSelect').value;
+
+  fetch('http://localhost:3000/api/artworks')
+    .then(res => res.json())
+    .then(data => {
+      data = data
+        .filter(art => art.image && art.image.trim() !== '') // ✨ Only artworks with images
+        .map(art => {
+          if (!art.price) art.price = Math.floor(Math.random() * 5000) + 500;
+          return art;
         });
-    }
 
-    function renderGallery(data) {
-      galleryData = data;
-      showCurrentPage(); 
-    }
+      let filtered = currentFilter === 'all'
+        ? data
+        : data.filter(art => art.medium?.toLowerCase().includes(currentFilter.toLowerCase()));
 
-    function showCurrentPage() {
-      const gallery = document.getElementById('gallery');
-      gallery.innerHTML = '';
+      switch (sortValue) {
+        case 'year-desc':
+          filtered.sort((a, b) => (b.year || 0) - (a.year || 0));
+          break;
+        case 'year-asc':
+          filtered.sort((a, b) => (a.year || 0) - (b.year || 0));
+          break;
+        case 'title-asc':
+          filtered.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+          break;
+        case 'title-desc':
+          filtered.sort((a, b) => (b.title || '').localeCompare(a.title || ''));
+          break;
+      }
 
-      const startIndex = (currentPage - 1) * itemsPerPage;
-      const endIndex = Math.min(startIndex + itemsPerPage, galleryData.length);
-      const pageData = galleryData.slice(startIndex, endIndex);
+      renderGallery(filtered);
 
-      pageData.forEach(art => {
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `
-        ${art.image ? `<img src="${art.image}" class="card-img" alt="${art.title}">` : ''}
-        <div class="card-hover-overlay">
-          <button class="view-details-btn" onclick='viewDetails(${JSON.stringify(art)})'>View Details</button>
-          <button class="favourite-btn ${isFavourited(art.id) ? 'favourited' : ''}" onclick='toggleFavourite(${JSON.stringify(art)})'>
-            <i class="fas fa-heart"></i>
-          </button>
-        </div>
-        <div class="card-body">
-          <h5>${art.title || 'Untitled'}</h5>
-          <p class="artist">${art.artist || 'Unknown Artist'}</p>
-        </div>
-      `;
-      gallery.appendChild(card);
+      document.querySelectorAll('.category-filters button').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`.category-filters button[onclick*="${currentFilter}"]`)?.classList.add('active');
+    })
+    .catch(err => {
+      console.error("Error fetching artworks:", err);
     });
+}
 
 
-  document.getElementById('pageInfo').textContent = `Showing ${startIndex + 1}–${endIndex} of ${galleryData.length}`;
+function renderGallery(data) {
+  galleryData = data;
+  showCurrentPage();
+}
+
+function showCurrentPage() {
+  const gallery = document.getElementById('gallery');
+  gallery.innerHTML = '';
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, galleryData.length);
+  const pageData = galleryData.slice(startIndex, endIndex);
+
+  pageData.forEach(art => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      ${art.image ? `<img src="${art.image}" class="card-img" alt="${art.title}">` : ''}
+      <div class="card-hover-overlay">
+        <button class="view-details-btn" onclick='viewDetails(${JSON.stringify(art)})'>View Details</button>
+        <button class="favourite-btn ${isFavourited(art.id) ? 'favourited' : ''}" onclick='toggleFavourite(${JSON.stringify(art)})'>
+          <i class="fas fa-heart"></i>
+        </button>
+      </div>
+      <div class="card-body">
+        <h5>${art.title || 'Untitled'}</h5>
+        <p class="artist">${art.artist || 'Unknown Artist'}</p>
+      </div>
+    `;
+    gallery.appendChild(card);
+  });
+
+  const pageInfo = document.getElementById('pageInfo');
+  pageInfo.textContent = galleryData.length === 0
+    ? 'No artworks found'
+    : `Showing ${startIndex + 1}–${endIndex} of ${galleryData.length}`;
+
   document.getElementById('prevPageBtn').disabled = currentPage === 1;
   document.getElementById('nextPageBtn').disabled = endIndex >= galleryData.length;
 }
 
+function nextPage() {
+  if ((currentPage * itemsPerPage) < galleryData.length) {
+    currentPage++;
+    showCurrentPage();
+  }
+}
+function previousPage() {
+  if (currentPage > 1) {
+    currentPage--;
+    showCurrentPage();
+  }
+}
 
-    function nextPage() {
-      if ((currentPage * itemsPerPage) < galleryData.length) {
-        currentPage++;
-        showCurrentPage();
-      }
-    }
+function updateCartDisplay() {
+  const cartTotal = document.querySelector('.cart-total');
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  cartTotal.textContent = `${totalItems} item${totalItems !== 1 ? 's' : ''}`;
+}
 
-    function previousPage() {
-      if (currentPage > 1) {
-        currentPage--;
-        showCurrentPage();
-      }
-    }
+function renderCartItems() {
+  const cartContainer = document.getElementById('cart-items-container');
+  cartContainer.innerHTML = '';
 
+  if (cart.length === 0) {
+    cartContainer.innerHTML = '<p class="empty-cart">Your cart is empty</p>';
+    document.getElementById('cart-total-price').textContent = '0';
+    return;
+  }
 
-    function viewDetails(art) {
-      localStorage.setItem('selectedArtwork', JSON.stringify(art));
-      saveCart();
-      window.location.href = 'details.html';
-    }
+  let totalPrice = 0;
+  cart.forEach(item => {
+    const itemPrice = item.price * item.quantity;
+    totalPrice += itemPrice;
 
-    function updateCartDisplay() {
-      const cartTotal = document.querySelector('.cart-total');
-      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-      cartTotal.textContent = `${totalItems} item${totalItems !== 1 ? 's' : ''}`;
-    }
-
-    function renderCartItems() {
-      const cartContainer = document.getElementById('cart-items-container');
-      cartContainer.innerHTML = '';
-      
-      if (cart.length === 0) {
-        cartContainer.innerHTML = '<p class="empty-cart">Your cart is empty</p>';
-        document.getElementById('cart-total-price').textContent = '0';
-        return;
-      }
-      
-      let totalPrice = 0;
-      
-      cart.forEach(item => {
-        const itemPrice = item.price * item.quantity;
-        totalPrice += itemPrice;
-        
-        const cartItem = document.createElement('div');
-        cartItem.className = 'cart-item';
-        cartItem.innerHTML = `
-        <div class="cart-item-img">
-          <img src="${item.image}" alt="${item.title}">
-        </div>
-        <div class="cart-item-details">
-          <h5>${item.title}</h5>
-          <p><strong>Price:</strong> $${item.price}</p>
-          <div class="quantity-row">
-            <strong>Quantity:</strong>
-            <div class="quantity-controls">
-              <button onclick="updateQuantity(${item.id}, ${item.quantity - 1})" ${item.quantity <= 1 ? 'disabled' : ''}>-</button>
-              <span>${item.quantity}</span>
-              <button onclick="updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
-            </div>
+    const cartItem = document.createElement('div');
+    cartItem.className = 'cart-item';
+    cartItem.innerHTML = `
+      <div class="cart-item-img">
+        <img src="${item.image}" alt="${item.title}">
+      </div>
+      <div class="cart-item-details">
+        <h5>${item.title}</h5>
+        <p><strong>Price:</strong> $${item.price}</p>
+        <div class="quantity-row">
+          <strong>Quantity:</strong>
+          <div class="quantity-controls">
+            <button onclick="updateQuantity(${item.id}, ${item.quantity - 1})" ${item.quantity <= 1 ? 'disabled' : ''}>-</button>
+            <span>${item.quantity}</span>
+            <button onclick="updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
           </div>
         </div>
-        <div class="cart-item-actions">
-          <button onclick="removeCartItem(${item.id})">
-            <i class="fas fa-trash"></i>
-          </button>
-        </div>
-      `;
+      </div>
+      <div class="cart-item-actions">
+        <button onclick="removeCartItem(${item.id})"><i class="fas fa-trash"></i></button>
+      </div>
+    `;
 
-        cartContainer.appendChild(cartItem);
-      });
-      
-      document.getElementById('cart-total-price').textContent = totalPrice.toFixed(2);
-    }
+    cartContainer.appendChild(cartItem);
+  });
 
-    function removeCartItem(id) {
-      cart = cart.filter(item => item.id !== id);
-      saveCart();
-      updateCartDisplay();
-      renderCartItems();
-    }
+  document.getElementById('cart-total-price').textContent = totalPrice.toFixed(2);
+}
 
-    function updateQuantity(id, newQuantity) {
-      if (newQuantity < 1) return;
-      
-      const itemIndex = cart.findIndex(item => item.id === id);
-      if (itemIndex !== -1) {
-        cart[itemIndex].quantity = newQuantity;
-        saveCart();
-        updateCartDisplay();
-        renderCartItems();
-      }
-    }
+function viewDetails(art) {
+  localStorage.setItem('selectedArtwork', JSON.stringify(art));
+  window.location.href = 'details.html';
+}
 
-    function clearCart() {
-      cart = [];
-      saveCart();
-      updateCartDisplay();
-      renderCartItems();
-    }
+function removeCartItem(id) {
+  cart = cart.filter(item => item.id !== id);
+  saveCart();
+  updateCartDisplay();
+  renderCartItems();
+}
 
-    function checkout() {
-      alert('Thank you for your purchase!');
-      clearCart();
-      // Hide cart panel and update localStorage
-      document.getElementById('cart-panel').classList.add('hidden');
-      localStorage.setItem('cartPanelVisible', 'false');
-    }
+function updateQuantity(id, newQuantity) {
+  if (newQuantity < 1) return;
+  const itemIndex = cart.findIndex(item => item.id === id);
+  if (itemIndex !== -1) {
+    cart[itemIndex].quantity = newQuantity;
+    saveCart();
+    updateCartDisplay();
+    renderCartItems();
+  }
+}
 
-    function saveCart() {
-      localStorage.setItem('cart', JSON.stringify(cart));
-    }
+function clearCart() {
+  cart = [];
+  saveCart();
+  updateCartDisplay();
+  renderCartItems();
+}
 
-    function searchArtworks() {
-      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-      
-      fetch('http://localhost:3000/api/artworks')
-        .then(res => res.json())
-        .then(data => {
-          const results = data.filter(art => 
-            art.title?.toLowerCase().includes(searchTerm) || 
-            art.artist?.toLowerCase().includes(searchTerm) ||
-            art.medium?.toLowerCase().includes(searchTerm)
-          );
-          renderGallery(results);
-        })
-        .catch(err => {
-          console.error("Error searching artworks:", err);
-        });
-    }
+function checkout() {
+  alert('Thank you for your purchase!');
+  clearCart();
+  document.getElementById('cart-panel').classList.add('hidden');
+  localStorage.setItem('cartPanelVisible', 'false');
+}
 
-    function toggleAccountMenu() {
-      document.querySelector('.account-menu').classList.toggle('hidden');
-    }
+function saveCart() {
+  localStorage.setItem('cart', JSON.stringify(cart));
+}
 
-    function signOut() {
-      alert("You've been signed out!");
-    }
-
-    // Hide cart or account menu when clicking outside
-    document.addEventListener('click', function (event) {
-      const cartPanel = document.getElementById('cart-panel');
-      const cartIcon = document.getElementById('cart-icon');
-      const accountMenu = document.querySelector('.account-menu');
-      const accountBtn = document.querySelector('.account-btn');
-
-      // If click is outside the cart panel and cart icon, hide cart
-      if (
-        cartPanel && !cartPanel.contains(event.target) &&
-        cartIcon && !cartIcon.contains(event.target)
-      ) {
-        cartPanel.classList.add('hidden');
-        localStorage.setItem('cartPanelVisible', 'false');
-      }
-
-      // If click is outside the account menu and button, hide account menu
-      if (
-        accountMenu && !accountMenu.contains(event.target) &&
-        accountBtn && !accountBtn.contains(event.target)
-      ) {
-        accountMenu.classList.add('hidden');
-      }
+function searchArtworks() {
+  const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+  fetch('http://localhost:3000/api/artworks')
+    .then(res => res.json())
+    .then(data => {
+      const results = data.filter(art =>
+        art.title?.toLowerCase().includes(searchTerm) ||
+        art.artist?.toLowerCase().includes(searchTerm) ||
+        art.medium?.toLowerCase().includes(searchTerm)
+      );
+      renderGallery(results);
+    })
+    .catch(err => {
+      console.error("Error searching artworks:", err);
     });
+}
 
-    let favourites = JSON.parse(localStorage.getItem('favourites')) || [];
+function toggleAccountMenu() {
+  document.querySelector('.account-menu').classList.toggle('hidden');
+}
 
-    function toggleFavourite(art) {
-      const exists = favourites.find(a => a.id === art.id);
-      if (exists) {
-        favourites = favourites.filter(a => a.id !== art.id);
-      } else {
-        favourites.push(art);
-      }
-      localStorage.setItem('favourites', JSON.stringify(favourites));
-      applyFilterSort(); 
-    }
+function signOut() {
+  alert("You've been signed out!");
+}
 
-    function isFavourited(id) {
-      return favourites.some(a => a.id === id);
-    }
+document.addEventListener('click', function (event) {
+  const cartPanel = document.getElementById('cart-panel');
+  const cartIcon = document.getElementById('cart-icon');
+  const accountMenu = document.querySelector('.account-menu');
+  const accountBtn = document.querySelector('.account-btn');
 
-  </script>
+  if (cartPanel && !cartPanel.contains(event.target) && cartIcon && !cartIcon.contains(event.target)) {
+    cartPanel.classList.add('hidden');
+    localStorage.setItem('cartPanelVisible', 'false');
+  }
+
+  if (accountMenu && !accountMenu.contains(event.target) && accountBtn && !accountBtn.contains(event.target)) {
+    accountMenu.classList.add('hidden');
+  }
+});
+
+// Favourites
+let favourites = JSON.parse(localStorage.getItem('favourites')) || [];
+
+function toggleFavourite(art) {
+  const exists = favourites.find(a => a.id === art.id);
+  if (exists) {
+    favourites = favourites.filter(a => a.id !== art.id);
+  } else {
+    favourites.push(art);
+  }
+  localStorage.setItem('favourites', JSON.stringify(favourites));
+  applyFilterSort();
+}
+
+function isFavourited(id) {
+  return favourites.some(a => a.id === id);
+}
+
+</script>
+
 </body>
 </html>

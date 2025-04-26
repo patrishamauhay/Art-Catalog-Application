@@ -35,11 +35,31 @@ async function startServer() {
   
 startServer()
 
-// GET all
+// GET all artworks
 app.get('/api/artworks', async (req, res) => {
-    const results = await artworks.find().limit(50).toArray()
-    res.json(results)
-  })
+  const results = await artworks.find().limit(550).toArray();
+  
+  const mappedResults = results.map(art => {
+    let department = (art.Department || art.department || '').trim();
+    department = department ? department.toLowerCase() : 'unknown'; 
+  
+    return {
+      id: art.ObjectID || art.id,
+      title: art.Title || art.title || 'Untitled',
+      artist: Array.isArray(art.Artist) ? art.Artist.join(', ') : (art.artist || 'Unknown Artist'),
+      year: parseInt(art.Date) || art.year || null,
+      medium: art.Medium || art.medium || '',
+      image: art.ImageURL || art.image || '',
+      department: department, 
+      classification: (art.Classification || art.classification || '').toLowerCase(),
+      price: art.price || Math.floor(Math.random() * 5000) + 500
+    }
+  });
+  
+
+  res.json(mappedResults);
+});
+
   
 
 // POST new

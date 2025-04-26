@@ -7,9 +7,7 @@
  - Favourites
  - Paginate
 
-
-
  - Check out -> My Collection
- - Filter
+ - cart
 
 
