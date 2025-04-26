@@ -190,36 +190,34 @@
     }
 
     function showCurrentPage() {
-  const gallery = document.getElementById('gallery');
-  gallery.innerHTML = '';
+      const gallery = document.getElementById('gallery');
+      gallery.innerHTML = '';
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = Math.min(startIndex + itemsPerPage, galleryData.length);
-  const pageData = galleryData.slice(startIndex, endIndex);
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = Math.min(startIndex + itemsPerPage, galleryData.length);
+      const pageData = galleryData.slice(startIndex, endIndex);
 
-  pageData.forEach(art => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `
-      ${art.image ? `<img src="${art.image}" class="card-img" alt="${art.title}">` : ''}
-      <div class="card-hover-overlay">
-        <button class="view-details-btn" onclick='viewDetails(${JSON.stringify(art)})'>View Details</button>
-        <button class="favourite-btn ${isFavourited(art.id) ? 'favourited' : ''}' onclick='toggleFavourite(${JSON.stringify(art)})'>
-          <i class="fas fa-heart"></i>
-        </button>
-      </div>
-      <div class="card-body">
-        <h5>${art.title || 'Untitled'}</h5>
-        <p class="artist">${art.artist || 'Unknown Artist'}</p>
-      </div>
-    `;
-    gallery.appendChild(card);
-  });
+      pageData.forEach(art => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        ${art.image ? `<img src="${art.image}" class="card-img" alt="${art.title}">` : ''}
+        <div class="card-hover-overlay">
+          <button class="view-details-btn" onclick='viewDetails(${JSON.stringify(art)})'>View Details</button>
+          <button class="favourite-btn ${isFavourited(art.id) ? 'favourited' : ''}" onclick='toggleFavourite(${JSON.stringify(art)})'>
+            <i class="fas fa-heart"></i>
+          </button>
+        </div>
+        <div class="card-body">
+          <h5>${art.title || 'Untitled'}</h5>
+          <p class="artist">${art.artist || 'Unknown Artist'}</p>
+        </div>
+      `;
+      gallery.appendChild(card);
+    });
 
-  // ✅ Update page info text
+
   document.getElementById('pageInfo').textContent = `Showing ${startIndex + 1}–${endIndex} of ${galleryData.length}`;
-
-  // Update button states
   document.getElementById('prevPageBtn').disabled = currentPage === 1;
   document.getElementById('nextPageBtn').disabled = endIndex >= galleryData.length;
 }
