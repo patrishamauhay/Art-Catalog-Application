@@ -96,8 +96,9 @@
     <div id="gallery" class="gallery-grid"></div>
     <div class="pagination-controls" style="text-align:center; margin-top: 30px;">
       <button id="prevPageBtn" onclick="previousPage()" disabled>Previous</button>
+      <span id="pageInfo" style="margin: 0 15px;">Showing 1–20</span>
       <button id="nextPageBtn" onclick="nextPage()">Next</button>
-    </div>
+    </div>    
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.js"></script>
@@ -107,7 +108,7 @@
     
     let galleryData = [];
     let currentPage = 1;
-    const itemsPerPage = 25;
+    const itemsPerPage = 20;
 
     
     // Update cart display on load and check cart panel visibility
@@ -184,31 +185,63 @@
     }
 
     function renderGallery(data) {
-      const gallery = document.getElementById('gallery')
-      gallery.innerHTML = ''
-      data.forEach(art => {
-        const card = document.createElement('div')
-        card.className = 'card';
-        card.innerHTML = `
-        ${art.image ? `<img src="${art.image}" class="card-img" alt="${art.title}">` : ''}
-        <div class="card-hover-overlay">
-          <button class="view-details-btn" onclick='viewDetails(${JSON.stringify(art)})'>View Details</button>
-          <button class="favourite-btn" onclick='toggleFavourite(${JSON.stringify(art)})'>
-            <i class="fas fa-heart"></i>
-          </button>
-          </div>
-        <div class="card-body">
-            <h5>${art.title || 'Untitled'}</h5>
-            <p class="artist">${art.artist || 'Unknown Artist'}</p>
-        </div>
-        `
-        gallery.appendChild(card)
-      })
+      galleryData = data;
+      showCurrentPage(); 
     }
+
+    function showCurrentPage() {
+  const gallery = document.getElementById('gallery');
+  gallery.innerHTML = '';
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, galleryData.length);
+  const pageData = galleryData.slice(startIndex, endIndex);
+
+  pageData.forEach(art => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      ${art.image ? `<img src="${art.image}" class="card-img" alt="${art.title}">` : ''}
+      <div class="card-hover-overlay">
+        <button class="view-details-btn" onclick='viewDetails(${JSON.stringify(art)})'>View Details</button>
+        <button class="favourite-btn ${isFavourited(art.id) ? 'favourited' : ''}' onclick='toggleFavourite(${JSON.stringify(art)})'>
+          <i class="fas fa-heart"></i>
+        </button>
+      </div>
+      <div class="card-body">
+        <h5>${art.title || 'Untitled'}</h5>
+        <p class="artist">${art.artist || 'Unknown Artist'}</p>
+      </div>
+    `;
+    gallery.appendChild(card);
+  });
+
+  // ✅ Update page info text
+  document.getElementById('pageInfo').textContent = `Showing ${startIndex + 1}–${endIndex} of ${galleryData.length}`;
+
+  // Update button states
+  document.getElementById('prevPageBtn').disabled = currentPage === 1;
+  document.getElementById('nextPageBtn').disabled = endIndex >= galleryData.length;
+}
+
+
+    function nextPage() {
+      if ((currentPage * itemsPerPage) < galleryData.length) {
+        currentPage++;
+        showCurrentPage();
+      }
+    }
+
+    function previousPage() {
+      if (currentPage > 1) {
+        currentPage--;
+        showCurrentPage();
+      }
+    }
+
 
     function viewDetails(art) {
       localStorage.setItem('selectedArtwork', JSON.stringify(art));
-      // Make sure to save cart state before navigation
       saveCart();
       window.location.href = 'details.html';
     }
@@ -259,7 +292,6 @@
           </button>
         </div>
       `;
-
 
         cartContainer.appendChild(cartItem);
       });
@@ -358,44 +390,20 @@
 
     let favourites = JSON.parse(localStorage.getItem('favourites')) || [];
 
-function toggleFavourite(art) {
-  const exists = favourites.find(a => a.id === art.id);
-  if (exists) {
-    favourites = favourites.filter(a => a.id !== art.id);
-  } else {
-    favourites.push(art);
-  }
-  localStorage.setItem('favourites', JSON.stringify(favourites));
-  applyFilterSort(); // to re-render updated icons
-}
+    function toggleFavourite(art) {
+      const exists = favourites.find(a => a.id === art.id);
+      if (exists) {
+        favourites = favourites.filter(a => a.id !== art.id);
+      } else {
+        favourites.push(art);
+      }
+      localStorage.setItem('favourites', JSON.stringify(favourites));
+      applyFilterSort(); 
+    }
 
-function isFavourited(id) {
-  return favourites.some(a => a.id === id);
-}
-
-function renderGallery(data) {
-  const gallery = document.getElementById('gallery');
-  gallery.innerHTML = '';
-  data.forEach(art => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `
-      ${art.image ? `<img src="${art.image}" class="card-img" alt="${art.title}">` : ''}
-      <div class="card-hover-overlay">
-        <button class="view-details-btn" onclick='viewDetails(${JSON.stringify(art)})'>View Details</button>
-        <button class="favourite-btn ${isFavourited(art.id) ? 'favourited' : ''}" onclick='toggleFavourite(${JSON.stringify(art)})'>
-          <i class="fas fa-heart"></i>
-        </button>
-      </div>
-      <div class="card-body">
-        <h5>${art.title || 'Untitled'}</h5>
-        <p class="artist">${art.artist || 'Unknown Artist'}</p>
-      </div>
-    `;
-    gallery.appendChild(card);
-  });
-}
-
+    function isFavourited(id) {
+      return favourites.some(a => a.id === id);
+    }
 
   </script>
 </body>
