@@ -63,6 +63,7 @@ The project demonstrates complete CRUD functionality on the frontend using Local
     ` node server.js
     `
 
+My local host is in port 3000 (http://localhost:3000/)
 
 ## **Limitations/Weaknesses**
 - Cart, Favourites, and My Collection are saved only in LocalStorage — clearing browser data will erase them.
