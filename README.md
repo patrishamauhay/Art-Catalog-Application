@@ -7,7 +7,7 @@ Simply Art Gallery is a full-stack web application that allows users to browse, 
 Users can add artworks to their cart, favourite artworks, checkout to save artworks into "My Collection", and edit or remove their saved collection items.
 The project demonstrates complete CRUD functionality on the frontend using LocalStorage.
 
-Features:
+    Features:
 - Artworks Gallery: Browse artworks
 - Search Functionality: Search for different artworks by title, artist, or medium
 - Category Filters: Filter artworks by different mediums
