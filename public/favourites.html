@@ -10,92 +10,80 @@
 </head>
 <body>      
 
-  <nav class="navbar">
-    <div class="nav-left">
-      <span class="logo">SimplyArt</span>
-      <a href="index.html" class="nav-link ">Home</a>
-      <a href="about.html" class="nav-link">About This Page</a>
-      <a href="#" class="nav-link">My Collection</a>
+<nav class="navbar">
+  <div class="nav-left">
+    <span class="logo">SimplyArt</span>
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="about.html" class="nav-link">About This Page</a>
+    <a href="collection.html" class="nav-link">My Collection</a>
+  </div>
+  <div class="nav-right">
+    <button class="account-btn" onclick="toggleAccountMenu()">
+      My Account <i class="fas fa-caret-down"></i>
+    </button>
+    <div class="account-menu hidden">
+      <a href="profile.html">My Profile</a>
+      <a href="favourites.html" onclick="viewFavourites()">My Favourites</a>
+      <a href="#" onclick="signOut()">Sign Out</a>
     </div>
-    <div class="nav-right">
-          <button class="account-btn" onclick="toggleAccountMenu()">
-            My Account <i class="fas fa-caret-down"></i>
-          </button>
-          <div class="account-menu hidden">
-            <a href="profile.html">My Profile</a>
-            <a href="favourites.html" onclick="viewFavourites()">My Favourites</a>
-            <a href="#" onclick="signOut()">Sign Out</a>
-          </div>
-          
-      <a href="#" class="cart-icon" id="cart-icon" onclick="toggleCart()">
-        <img src="images/icons8-cart-30.png" alt="Cart" class="cart-img" /> 
-        <span class="cart-total">0 items</span>
-      </a>
-    </div>
-
-      <!-- Cart Panel -->
-      <div id="cart-panel" class="cart-panel hidden">
-        <h4>Your Cart</h4>
-        <div id="cart-items-container">
-          <!-- Cart items will be added here -->
-        </div>
-        <div class="cart-summary">
-          <div class="cart-total-price">Total: $<span id="cart-total-price">0</span></div>
-          <button class="btn btn-success" onclick="checkout()">Checkout</button>
-          <button class="btn btn-danger" onclick="clearCart()">Clear Cart</button>
-        </div>
-      </div>
-  </nav>
-
-    <!-- Main Content -->
-    <main class="gallery-section">
-        <h2 class="gallery-title">Favourite Artworks</h2>
-        <div id="favouritesGallery" class="gallery-grid"></div>
-  </main>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.js"></script>
-    <script>
-      // Load cart from localStorage
-      let cart = JSON.parse(localStorage.getItem('cart')) || [];
-      updateCartDisplay();
-      renderCartItems();
-
-        const favs = JSON.parse(localStorage.getItem('favourites')) || [];
-        const container = document.getElementById('favouritesGallery');
     
-        if (favs.length === 0) {
-          container.innerHTML = '<p class="empty-cart">No favourites yet. Start hearting your favourite artworks!</p>';
-        } else {
-            favs.forEach(art => {
-        const card = document.createElement('div');
-        card.className = 'card position-relative';
-        card.innerHTML = `
-            <img src="${art.image}" class="card-img" alt="${art.title}">
-            <div class="card-hover-overlay">
-            <button class="view-details-btn" onclick='viewDetails(${JSON.stringify(art)})'>View Details</button>
-            </div>
-            <div class="card-body">
-            <h5>${art.title}</h5>
-            <p class="artist">${art.artist}</p>
-            </div>
-        `;
-        container.appendChild(card);
-        });
+    <a href="#" class="cart-icon" id="cart-icon" onclick="toggleCart()">
+      <img src="images/icons8-cart-30.png" alt="Cart" class="cart-img" /> 
+      <span class="cart-total">0 items</span>
+    </a>
+  </div>
 
-        function viewDetails(art) {
-        localStorage.setItem('selectedArtwork', JSON.stringify(art));
-        window.location.href = 'details.html';
-        }
+  <!-- Cart Panel -->
+  <div id="cart-panel" class="cart-panel hidden">
+    <div class="cart-header">
+      <h4><i class="fas fa-shopping-cart"></i> Your Cart</h4>
+      <button onclick="toggleCart()" class="close-cart-btn"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="cart-items-container" class="cart-items-container"></div>
+    <div class="cart-summary">
+      <div class="cart-total-line">
+        <span>Total:</span>
+        <strong class="cart-total-price">$<span id="cart-total-price">0</span></strong>
+      </div>
+      <div class="cart-actions">
+        <button class="btn btn-success w-100 mb-2" onclick="checkout()">Checkout</button>
+        <button class="btn btn-outline-danger w-100" onclick="clearCart()">Clear Cart</button>
+      </div>
+    </div>
+  </div>
+</nav>
 
-        }
+<!-- Main Content -->
+<main class="gallery-section">
+  <h2 class="gallery-title">Favourite Artworks</h2>
+  <div id="favouritesGallery" class="gallery-grid"></div>
+</main>
 
-        function updateCartDisplay() {
-        const cartTotal = document.querySelector('.cart-total');
-        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-        cartTotal.textContent = `${totalItems} item${totalItems !== 1 ? 's' : ''}`;
-      }
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.js"></script>
+<script>
+// Cart logic
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+updateCartDisplay();
+renderCartItems();
 
-      function renderCartItems() {
+function toggleCart() {
+  const cartPanel = document.getElementById("cart-panel");
+  const isHidden = cartPanel.classList.toggle("hidden");
+  localStorage.setItem('cartPanelVisible', !isHidden);
+  renderCartItems();
+}
+
+function updateCartDisplay() {
+  const cartTotal = document.querySelector('.cart-total');
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  cartTotal.textContent = `${totalItems} item${totalItems !== 1 ? 's' : ''}`;
+}
+
+function saveCart() {
+  localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+function renderCartItems() {
   const cartContainer = document.getElementById('cart-items-container');
   cartContainer.innerHTML = '';
 
@@ -112,29 +100,129 @@
     totalPrice += itemPrice;
 
     const cartItem = document.createElement('div');
-    cartItem.className = 'cart-item d-flex align-items-center justify-content-between mb-3 p-2 border rounded';
+    cartItem.className = 'cart-item';
     cartItem.innerHTML = `
-      <div class="d-flex align-items-center">
-        <img src="${item.image}" alt="${item.title}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px; margin-right: 10px;">
-        <div>
-          <h6 class="mb-1">${item.title}</h6>
-          <small>Price: $${item.price} x ${item.quantity}</small>
+      <div class="cart-item-img">
+        <img src="${item.image}" alt="${item.title}">
+      </div>
+      <div class="cart-item-details">
+        <h5 class="cart-item-title">${item.title || 'Untitled'}</h5>
+        <p><strong>Artist:</strong> ${item.artist || 'Unknown Artist'}</p>
+        <p><strong>Price:</strong> $${item.price}</p>
+        <div class="quantity-row">
+          <strong>Quantity:</strong>
+          <div class="quantity-controls">
+            <button onclick="updateQuantity(${item.id}, ${item.quantity - 1})" ${item.quantity <= 1 ? 'disabled' : ''}>-</button>
+            <span>${item.quantity}</span>
+            <button onclick="updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
+          </div>
         </div>
       </div>
-      <div class="d-flex align-items-center">
-        <button onclick="removeCartItem(${item.id})" class="btn btn-sm btn-outline-danger">
-          <i class="fas fa-trash"></i>
-        </button>
+      <div class="cart-item-actions">
+        <button onclick="removeCartItem(${item.id})"><i class="fas fa-trash"></i></button>
       </div>
     `;
-
     cartContainer.appendChild(cartItem);
   });
 
   document.getElementById('cart-total-price').textContent = totalPrice.toFixed(2);
 }
 
+function updateQuantity(id, newQuantity) {
+  if (newQuantity < 1) return;
+  const itemIndex = cart.findIndex(item => item.id === id);
+  if (itemIndex !== -1) {
+    cart[itemIndex].quantity = newQuantity;
+    saveCart();
+    updateCartDisplay();
+    renderCartItems();
+  }
+}
 
-      </script>
-    </body>
+function removeCartItem(id) {
+  cart = cart.filter(item => item.id !== id);
+  saveCart();
+  updateCartDisplay();
+  renderCartItems();
+}
+
+function clearCart() {
+  cart = [];
+  saveCart();
+  updateCartDisplay();
+  renderCartItems();
+}
+
+function checkout() {
+  alert('Thank you for your purchase!');
+  clearCart();
+  document.getElementById('cart-panel').classList.add('hidden');
+  localStorage.setItem('cartPanelVisible', 'false');
+}
+
+// Favourites logic
+const favs = JSON.parse(localStorage.getItem('favourites')) || [];
+const container = document.getElementById('favouritesGallery');
+
+if (favs.length === 0) {
+  container.innerHTML = '<p class="empty-cart">No favourites yet. Start hearting your favourite artworks!</p>';
+} else {
+  favs.forEach(art => {
+    const card = document.createElement('div');
+    card.className = 'card position-relative';
+    card.innerHTML = `
+      <img src="${art.image}" class="card-img" alt="${art.title}">
+      
+      <div class="card-hover-overlay d-flex flex-column align-items-center justify-content-center">
+        <button class="btn btn-dark mb-2 w-75" onclick='viewDetails(${JSON.stringify(art)})'>View Details</button>
+        <button class="btn btn-primary w-75" onclick='addToCart(${JSON.stringify(art)})'>Add to Cart</button>
+      </div>
+
+      <button class="remove-favourite-btn" onclick='removeFavourite(${JSON.stringify(art)})'>
+        <i class="fas fa-times"></i>
+      </button>
+
+      <div class="card-body">
+        <h5>${art.title}</h5>
+        <p class="artist">${art.artist}</p>
+      </div>
+    `;
+    container.appendChild(card);
+
+  });
+}
+
+function viewDetails(art) {
+  localStorage.setItem('selectedArtwork', JSON.stringify(art));
+  window.location.href = 'details.html';
+}
+
+function addToCart(art) {
+  const existingItem = cart.find(item => item.id === art.id);
+  if (existingItem) {
+    existingItem.quantity++;
+  } else {
+    cart.push({...art, quantity: 1});
+  }
+  saveCart();
+  updateCartDisplay();
+  renderCartItems();
+}
+
+function toggleAccountMenu() {
+  document.querySelector('.account-menu').classList.toggle('hidden');
+}
+
+function signOut() {
+  alert("You've been signed out!");
+}
+
+function removeFavourite(art) {
+  const updatedFavourites = (JSON.parse(localStorage.getItem('favourites')) || []).filter(a => a.id !== art.id);
+  localStorage.setItem('favourites', JSON.stringify(updatedFavourites));
+  location.reload();
+}
+
+</script>
+</body>
 </html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Collection - Simply Art Gallery</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .collection-list {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+    }
+    .collection-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #ccc;
+      padding: 10px 0;
+    }
+    .collection-item img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-right: 15px;
+    }
+    .collection-info {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .collection-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .edit-title-input {
+      font-size: 1rem;
+      padding: 5px;
+    }
+    .btn-small {
+      padding: 5px 8px;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-left">
+    <span class="logo">SimplyArt</span>
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="about.html" class="nav-link">About This Page</a>
+    <a href="collection.html" class="nav-link active">My Collection</a>
+  </div>
+  <div class="nav-right">
+    <button class="account-btn" onclick="toggleAccountMenu()">
+      My Account <i class="fas fa-caret-down"></i>
+    </button>
+    <div class="account-menu hidden">
+      <a href="profile.html">My Profile</a>
+      <a href="favourites.html">My Favourites</a>
+      <a href="#" onclick="signOut()">Sign Out</a>
+    </div>
+  </div>
+</nav>
+
+<main class="gallery-section">
+  <div style="text-align: center; margin-bottom: 20px;">
+    <button onclick="goBackToGallery()" class="btn btn-primary">← Back to Gallery</button>
+  </div>
+
+  <h2 class="gallery-title">My Collection</h2>
+  <div id="collectionGallery" class="collection-list"></div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.js"></script>
+<script>
+// Load Collection
+let collection = JSON.parse(localStorage.getItem('collection')) || [];
+const container = document.getElementById('collectionGallery');
+
+function saveCollection() {
+  localStorage.setItem('collection', JSON.stringify(collection));
+}
+
+function renderCollection() {
+  container.innerHTML = '';
+
+  if (collection.length === 0) {
+    container.innerHTML = '<p class="empty-cart text-center">Your collection is empty. Start purchasing your favourite artworks!</p>';
+    return;
+  }
+
+  collection.forEach((art, index) => {
+    const item = document.createElement('div');
+    item.className = 'collection-item';
+    item.innerHTML = `
+      <div class="collection-info">
+        <img src="${art.image}" alt="${art.title}">
+        <div>
+          <h5 id="title-${index}" class="mb-1">${art.title}</h5>
+          <small class="text-muted">${art.artist}</small><br/>
+          <small class="text-muted">$${art.price || 0}</small>
+        </div>
+      </div>
+      <div class="collection-actions">
+        <button class="btn btn-sm btn-info btn-small" onclick="editTitle(${index})"><i class="fas fa-edit"></i> Edit</button>
+        <button class="btn btn-sm btn-danger btn-small" onclick="removeArtwork(${index})"><i class="fas fa-times"></i> Remove</button>
+        <button class="btn btn-sm btn-dark btn-small" onclick='viewDetails(${JSON.stringify(art)})'><i class="fas fa-eye"></i> View</button>
+      </div>
+    `;
+    container.appendChild(item);
+  });
+}
+
+// Remove Artwork
+function removeArtwork(index) {
+  if (confirm("Are you sure you want to remove this artwork from your collection?")) {
+    collection.splice(index, 1);
+    saveCollection();
+    renderCollection();
+  }
+}
+
+// Edit Title
+function editTitle(index) {
+  const titleElement = document.getElementById(`title-${index}`);
+  const oldTitle = collection[index].title;
+
+  titleElement.innerHTML = `
+    <input type="text" id="edit-input-${index}" class="edit-title-input" value="${oldTitle}">
+    <div class="edit-actions mt-2">
+      <button class="btn btn-success btn-sm btn-small" onclick="saveEditedTitle(${index})">Save</button>
+      <button class="btn btn-danger btn-sm btn-small" onclick="cancelEdit(${index}, '${oldTitle.replace(/'/g, "\\'")}')">Cancel</button>
+    </div>
+  `;
+}
+
+// Save Edited Title
+function saveEditedTitle(index) {
+  const input = document.getElementById(`edit-input-${index}`);
+  const newTitle = input.value.trim();
+  if (newTitle) {
+    collection[index].title = newTitle;
+    saveCollection();
+    renderCollection();
+  }
+}
+
+// Cancel Editing
+function cancelEdit(index, oldTitle) {
+  const titleElement = document.getElementById(`title-${index}`);
+  titleElement.innerHTML = oldTitle;
+}
+
+// View Details
+function viewDetails(art) {
+  localStorage.setItem('selectedArtwork', JSON.stringify(art));
+  window.location.href = 'details.html';
+}
+
+// Go back to Gallery
+function goBackToGallery() {
+  window.location.href = 'index.html';
+}
+
+// Account Menu
+function toggleAccountMenu() {
+  document.querySelector('.account-menu').classList.toggle('hidden');
+}
+
+// Sign out
+function signOut() {
+  alert("You've been signed out!");
+}
+
+// Initial render
+renderCollection();
+</script>
+
+</body>
+</html>

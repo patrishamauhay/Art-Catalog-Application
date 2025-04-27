@@ -3,22 +3,55 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>About This Page</title>
+  <title>About This Page - Simply Art Gallery</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <nav class="navbar">
     <div class="nav-left">
-      <span class="logo">ArtVision</span>
+      <span class="logo">SimplyArt</span>
       <a href="index.html" class="nav-link">Home</a>
       <a href="about.html" class="nav-link active">About This Page</a>
+      <a href="collection.html" class="nav-link">My Collection</a>
+
     </div>
   </nav>
 
-  <div style="padding: 100px 40px;">
+  <div style="padding: 100px 40px; max-width: 900px; margin: auto;">
     <h1>About This Page</h1>
-    <p>This art gallery web app was developed for the EAD 2025 final assignment. It showcases artworks dynamically loaded from a MongoDB-backed Node.js server, allows adding and editing records, and was styled with inspiration from real-world gallery sites.</p>
-    <p>Students can use this interface to practice full-stack development using Express, static front-end styling, and RESTful CRUD functionality.</p>
+    
+    <h2>General Description</h2>
+    <p>
+      Simply Art Gallery is a full-stack web application that allows users to browse, search, and manage artworks. 
+      Users can add artworks to their cart, complete a checkout process to add items to their personal collection, 
+      favourite artworks for quick access later, and edit or remove items from their collection. 
+      The page content is dynamically retrieved using AJAX calls to a Node.js server, and updates happen without needing full page reloads.
+    </p>
+
+    <h2>Technologies Used</h2>
+    <ul>
+      <li><strong>Frontend:</strong> HTML, CSS, JavaScript, and FontAwesome icons</li>
+      <li><strong>Backend:</strong> Node.js with Express.js for the server</li>
+      <li><strong>Database:</strong> MongoDB (In-memory MongoDB server)</li>
+      <li><strong>APIs:</strong> Custom RESTful API endpoints for fetching, creating, updating, and deleting artworks</li>
+      <li><strong>Local Storage:</strong> Used to temporarily save cart, favourites, and collection data on the browser</li>
+    </ul>
+
+    <h2>Weaknesses of the Application</h2>
+    <ul>
+      <li>Data persistence is currently based on Local Storage, so collections and favourites are lost if the browser data is cleared.</li>
+      <li>There is no user authentication — anyone accessing the site shares the same local storage data.</li>
+      <li>Using an in-memory database means all artwork data would reset if the server restarts.</li>
+      <li>Limited backend validation — the server trusts data sent by the client without deep verification.</li>
+    </ul>
+
+    <h2>Alternative Approaches</h2>
+    <ul>
+      <li>Use a real hosted MongoDB database (e.g., MongoDB Atlas) to store user data persistently across sessions.</li>
+      <li>Implement authentication and account management so users have private collections and carts.</li>
+      <li>Replace Local Storage with server-side session management or JWT-based authentication.</li>
+      <li>Deploy the backend and frontend using a cloud platform like Vercel, Heroku, or Railway for live access.</li>
+    </ul>
   </div>
 </body>
 </html>

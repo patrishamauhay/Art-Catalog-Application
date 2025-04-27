@@ -15,7 +15,7 @@
     <span class="logo">SimplyArt</span>
     <a href="index.html" class="nav-link active">Home</a>
     <a href="about.html" class="nav-link">About This Page</a>
-    <a href="#" class="nav-link">My Collection</a>
+    <a href="collection.html" class="nav-link">My Collection</a>
   </div>
   <div class="nav-right">
     <button class="account-btn" onclick="toggleAccountMenu()">
@@ -343,11 +343,24 @@ function clearCart() {
 }
 
 function checkout() {
-  alert('Thank you for your purchase!');
+  let collection = JSON.parse(localStorage.getItem('collection')) || [];
+
+  cart.forEach(item => {
+    if (!collection.some(colItem => colItem.id === item.id)) {
+      collection.push(item);
+    }
+  });
+
+  localStorage.setItem('collection', JSON.stringify(collection));
+
   clearCart();
+
+  alert('Thank you for your purchase! Your items have been added to My Collection.');
+
   document.getElementById('cart-panel').classList.add('hidden');
   localStorage.setItem('cartPanelVisible', 'false');
 }
+
 
 
 function searchArtworks() {
